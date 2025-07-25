@@ -106,23 +106,23 @@ npx github:Pedrovaleriolopez/aios-fullstack install
 
 ### Configure Your IDE for AIOS Development
 
-After installation, set up your IDE with AIOS-specific rules:
+AIOS-FULLSTACK includes pre-configured IDE rules to enhance your development experience:
 
-```bash
-# Using AIOS Master agent
-@aios-master
-*setup-environment
+#### For Windsurf or Cursor:
+1. Open your IDE settings
+2. Navigate to **Global Rules** (Windsurf) or **User Rules** (Cursor)
+3. Copy the content from `.windsurf/global-rules.md` or `.cursor/global-rules.md`
+4. Paste into the rules section and save
 
-# Or directly via npm
-npm run setup:environment
-```
+#### For Claude Code:
+- ✅ Already configured! The `.claude/CLAUDE.md` file is automatically loaded
 
-This will:
-- 🔍 Detect your IDE (Windsurf, Cursor, or Claude Code)
-- 💾 Backup existing configurations
-- 📝 Apply AIOS development rules
-- 🔐 Verify GitHub CLI setup
-- ✅ Provide clear feedback
+These rules provide:
+- 🤖 Agent command recognition and integration
+- 📋 Story-driven development workflow
+- ✅ Automatic checkbox tracking
+- 🧪 Testing and validation patterns
+- 📝 AIOS-specific code standards
 
 ### Fastest Start: Web UI Full Stack Team at your disposal (2 minutes)
 
