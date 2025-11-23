@@ -3,9 +3,10 @@
 **ID:** STORY-1.7
 **Épico:** [EPIC-S1](../../../epics/epic-s1-installer-foundation.md)
 **Sprint:** 1 | **Points:** 3 | **Priority:** 🟠 High
-**Status:** Ready for Review
+**Status:** ✅ Complete
 **Created:** 2025-01-19
 **Updated:** 2025-11-23 (PO Validation - Pax)
+**Completed:** 2025-11-23 (Deployed to main)
 
 ---
 
