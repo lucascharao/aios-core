@@ -120,12 +120,57 @@ npx lint-staged
 
 ---
 
+## CodeRabbit Integration
+
+### Story Type Analysis
+
+**Primary Type**: Infrastructure/Tooling
+**Secondary Type(s)**: Developer Experience
+**Complexity**: Low-Medium (configuration-focused)
+
+### Specialized Agent Assignment
+
+**Primary Agents:**
+- @dev: Hook configuration and testing
+
+**Supporting Agents:**
+- @qa: Performance validation
+
+### Quality Gate Tasks
+
+- [ ] Pre-Commit (@dev): Run HOOK tests
+- [ ] Pre-PR (@github-devops): CodeRabbit config scan
+
+### Self-Healing Configuration
+
+**Expected Self-Healing:**
+- Primary Agent: @dev
+- Max Iterations: 2
+- Timeout: 10 minutes
+- Severity Filter: MEDIUM, HIGH, CRITICAL
+
+---
+
+## Dev Agent Record
+
+### Agent Model Used
+(To be filled after implementation)
+
+### Debug Log References
+- Decision Log: `.ai/decision-log-3.1.md`
+
+### Completion Notes
+(To be filled after implementation)
+
+---
+
 ## Change Log
 
 | Date | Version | Description | Author |
 |------|---------|-------------|--------|
 | 2025-01-19 | 1.0 | Story created (combined file) | River |
 | 2025-12-01 | 2.0 | Separated into individual story file | Pax (@po) |
+| 2025-12-01 | 2.1 | Added CodeRabbit Integration, Dev Agent Record, Quality Gate file | Pax (@po) |
 
 ---
 
