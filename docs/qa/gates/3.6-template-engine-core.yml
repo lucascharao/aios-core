@@ -240,18 +240,9 @@ qa_gate:
     tests:
       - "tests/template-engine/template-engine.test.js"
 
----
-
-# Recommendation
-
-**APPROVED FOR DONE** - Story 3.6 meets all critical acceptance criteria and has no blocking issues.
-
-All 4 MEDIUM severity issues have been documented as tech debt for future sprints.
-The Template Engine v2.0 is production-ready with comprehensive test coverage.
-
----
-
-# Signature
-
-Quinn ✅, Test Architect
-Guardião da Qualidade AIOS
+  # Recommendation: APPROVED FOR DONE
+  # Story 3.6 meets all critical acceptance criteria and has no blocking issues.
+  # All 4 MEDIUM severity issues have been documented as tech debt for future sprints.
+  # The Template Engine v2.0 is production-ready with comprehensive test coverage.
+  #
+  # Signature: Quinn (Test Architect) - Guardião da Qualidade AIOS

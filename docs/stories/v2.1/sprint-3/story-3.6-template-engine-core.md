@@ -357,7 +357,7 @@ Time:        0.618 s
 | TE-05 | Complete Document Generation (2 tests) | ✅ Pass |
 | TE-06 | Error Handling (3 tests) | ✅ Pass |
 | TE-07 | Template Listing (3 tests) | ✅ Pass |
-| Custom Helpers (4 tests) | ✅ Pass |
+| CH | Custom Helpers (4 tests) | ✅ Pass |
 
 ---
 
