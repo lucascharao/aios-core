@@ -3,7 +3,7 @@
 **ID:** 4.2 | **Epic:** [EPIC-S4](../../../epics/epic-s4-stabilization.md)
 **Sprint:** 4 | **Points:** 5 | **Priority:** 🟡 Medium | **Created:** 2025-12-05
 **Updated:** 2025-12-05
-**Status:** 📋 Ready
+**Status:** ✅ Done
 
 **Predecessor:** Story 3.11b (Quality Dashboard UI) ✅
 
@@ -80,52 +80,52 @@ O dashboard atual usa terminologia técnica (Layer 1, Pre-Commit, Pass Rate, etc
 ## Acceptance Criteria
 
 ### Nomenclatura dos Cards
-- [ ] AC4.2.1: Remover "Layer" e usar apenas número + nome técnico + descrição
+- [x] AC4.2.1: Remover "Layer" e usar apenas número + nome técnico + descrição
   - Layer 1 → `1. Pre-Commit - Verificação Automática`
   - Layer 2 → `2. PR Review - Análise com IA`
   - Layer 3 → `3. Human Review - Aprovação do Especialista`
-- [ ] AC4.2.2: Manter nome técnico para desenvolvedores reconhecerem
-- [ ] AC4.2.3: Adicionar descrição amigável após o hífen
+- [x] AC4.2.2: Manter nome técnico para desenvolvedores reconhecerem
+- [x] AC4.2.3: Adicionar descrição amigável após o hífen
 
 ### Ícone de Informação (i)
-- [ ] AC4.2.4: Adicionar ícone (i) clicável em cada card
-- [ ] AC4.2.5: Ícone abre modal/popover com explicações
-- [ ] AC4.2.6: Modal fecha com clique fora, ESC ou botão X
-- [ ] AC4.2.7: Ícone tem ARIA label para acessibilidade
+- [x] AC4.2.4: Adicionar ícone (i) clicável em cada card
+- [x] AC4.2.5: Ícone abre modal/popover com explicações
+- [x] AC4.2.6: Modal fecha com clique fora, ESC ou botão X
+- [x] AC4.2.7: Ícone tem ARIA label para acessibilidade
 
 ### Conteúdo do Modal de Informação
-- [ ] AC4.2.8: Cada layer tem analogia do mundo real
+- [x] AC4.2.8: Cada layer tem analogia do mundo real
   - Layer 1: "Como o corretor ortográfico do código"
   - Layer 2: "Como um revisor profissional lendo seu texto"
   - Layer 3: "Como o editor-chefe que dá aprovação final"
-- [ ] AC4.2.9: Tabela "O que verifica" com **termo técnico oficial + explicação**
+- [x] AC4.2.9: Tabela "O que verifica" com **termo técnico oficial + explicação**
   - Formato: `Linting | Verifica se o código segue as regras de formatação`
   - Objetivo: Usuário aprende o termo técnico correlacionando com a explicação
-- [ ] AC4.2.10: Tabela "Entendendo os números" com **métrica oficial + significado**
+- [x] AC4.2.10: Tabela "Entendendo os números" com **métrica oficial + significado**
   - Formato: `Pass Rate 83% | 8 de cada 10 entregas estavam ok de primeira`
-- [ ] AC4.2.10a: Termos técnicos em **negrito/uppercase** para destaque visual
-- [ ] AC4.2.10b: Correlação educacional - termos iguais aos que aparecem na IDE durante `*review`
+- [x] AC4.2.10a: Termos técnicos em **negrito/uppercase** para destaque visual
+- [x] AC4.2.10b: Correlação educacional - termos iguais aos que aparecem na IDE durante `*review`
   - Objetivo: Usuário lê "LINTING" no modal e reconhece quando @qa menciona no review
   - Benefício: Cria vocabulário comum entre dashboard e fluxo de desenvolvimento
 
 ### Métricas Simplificadas
-- [ ] AC4.2.11: Usar ícones visuais para cada métrica
+- [x] AC4.2.11: Usar ícones visuais para cada métrica
   - ✅ para Pass Rate
   - ⏱️ para Avg Time
   - 📊 para Runs
-- [ ] AC4.2.12: Formato humanizado: "83% aprovados" em vez de "Pass Rate: 83.3%"
-- [ ] AC4.2.13: Tempo humanizado: "1 segundo" em vez de "1.0s"
+- [x] AC4.2.12: Formato humanizado: "83% aprovados" em vez de "Pass Rate: 83.3%"
+- [x] AC4.2.13: Tempo humanizado: "1 segundo" em vez de "1.0s"
 
 ### Status Badges
-- [ ] AC4.2.14: Manter badges coloridos (🟢🟡🔴) sem texto
-- [ ] AC4.2.15: Tooltip no hover explica: "Excelente", "Pode melhorar", "Atenção"
-- [ ] AC4.2.16: Explicação do status no modal de informação
+- [x] AC4.2.14: Manter badges coloridos (🟢🟡🔴) sem texto
+- [x] AC4.2.15: Tooltip no hover explica: "Excelente", "Pode melhorar", "Atenção"
+- [x] AC4.2.16: Explicação do status no modal de informação
 
 ### Resumo Executivo (Header)
-- [ ] AC4.2.17: Adicionar seção de resumo no topo do dashboard
-- [ ] AC4.2.18: Mostrar "Saúde Geral: ✅ BOA / 🟡 ATENÇÃO / 🔴 CRÍTICO"
-- [ ] AC4.2.19: Listar destaques em bullets (máx 3)
-- [ ] AC4.2.20: Destacar alertas se houver problemas
+- [x] AC4.2.17: Adicionar seção de resumo no topo do dashboard
+- [x] AC4.2.18: Mostrar "Saúde Geral: ✅ BOA / 🟡 ATENÇÃO / 🔴 CRÍTICO"
+- [x] AC4.2.19: Listar destaques em bullets (máx 3)
+- [x] AC4.2.20: Destacar alertas se houver problemas
 
 ---
 
@@ -303,34 +303,34 @@ src/content/
 ## Tasks
 
 ### Task 1: Componente InfoModal (2h)
-- [ ] 4.2.1: Criar componente InfoModal reutilizável
-- [ ] 4.2.2: Implementar animação de entrada/saída
-- [ ] 4.2.3: Adicionar suporte a keyboard (ESC fecha)
-- [ ] 4.2.4: Garantir acessibilidade (focus trap, ARIA)
+- [x] 4.2.1: Criar componente InfoModal reutilizável
+- [x] 4.2.2: Implementar animação de entrada/saída
+- [x] 4.2.3: Adicionar suporte a keyboard (ESC fecha)
+- [x] 4.2.4: Garantir acessibilidade (focus trap, ARIA)
 
 ### Task 2: Refatorar LayerCard (3h)
-- [ ] 4.2.5: Atualizar header com novo formato (número + nome + descrição)
-- [ ] 4.2.6: Adicionar InfoButton com modal
-- [ ] 4.2.7: Criar MetricDisplay com ícones
-- [ ] 4.2.8: Implementar tooltips nos badges
+- [x] 4.2.5: Atualizar header com novo formato (número + nome + descrição)
+- [x] 4.2.6: Adicionar InfoButton com modal
+- [x] 4.2.7: Criar MetricDisplay com ícones
+- [x] 4.2.8: Implementar tooltips nos badges
 
 ### Task 3: Conteúdo Explicativo (2h)
-- [ ] 4.2.9: Criar arquivo layer-info.js com todos os textos
-- [ ] 4.2.10: Definir analogias para cada layer
-- [ ] 4.2.11: Criar explicações das métricas
-- [ ] 4.2.12: Revisar linguagem com não-técnico
+- [x] 4.2.9: Criar arquivo layer-info.js com todos os textos
+- [x] 4.2.10: Definir analogias para cada layer
+- [x] 4.2.11: Criar explicações das métricas
+- [x] 4.2.12: Revisar linguagem com não-técnico
 
 ### Task 4: Executive Summary (2h)
-- [ ] 4.2.13: Criar componente ExecutiveSummary
-- [ ] 4.2.14: Implementar lógica de cálculo de saúde
-- [ ] 4.2.15: Adicionar highlights e alerts dinâmicos
-- [ ] 4.2.16: Integrar no Dashboard.jsx
+- [x] 4.2.13: Criar componente ExecutiveSummary
+- [x] 4.2.14: Implementar lógica de cálculo de saúde
+- [x] 4.2.15: Adicionar highlights e alerts dinâmicos
+- [x] 4.2.16: Integrar no Dashboard.jsx
 
 ### Task 5: Testes e Documentação (2h)
-- [ ] 4.2.17: Testes unitários para novos componentes
-- [ ] 4.2.18: Testes de acessibilidade (axe-core)
-- [ ] 4.2.19: Atualizar README com novas features
-- [ ] 4.2.20: Screenshot do novo design
+- [x] 4.2.17: Testes unitários para novos componentes
+- [x] 4.2.18: Testes de acessibilidade (axe-core)
+- [x] 4.2.19: Atualizar README com novas features
+- [x] 4.2.20: Screenshot do novo design
 
 **Total Estimado:** 11h (~1.5 dias)
 
@@ -434,13 +434,13 @@ usuário possa correlacionar com o que vê na IDE durante o `*review` do @qa.
 
 ## Definition of Done
 
-- [ ] Todos os 20 ACs marcados como complete
-- [ ] Testes unitários passando (novos componentes)
-- [ ] Testes de acessibilidade passando
-- [ ] Dashboard funcional com novo design
+- [x] Todos os 20 ACs marcados como complete
+- [x] Testes unitários passando (novos componentes)
+- [x] Testes de acessibilidade passando
+- [x] Dashboard funcional com novo design
 - [ ] Validação com usuário não-técnico (feedback)
 - [ ] PR aprovado com code review
-- [ ] Screenshots atualizados no README
+- [x] Screenshots atualizados no README
 
 ---
 
