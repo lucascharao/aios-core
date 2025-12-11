@@ -43,7 +43,7 @@ docs/stories/
 | OSR-5 | ✅ Done | Community Handbook |
 | OSR-6 | ✅ Done | Feature Request Process |
 | OSR-7 | ✅ Done | Public Roadmap |
-| OSR-8 | 🟡 Ready | Expansion Pack Guide |
+| OSR-8 | 🟡 Ready | Squads Guide |
 | OSR-9 | ✅ Done | Rebranding (Synkra) |
 | OSR-10 | ⏳ Pending | Release Checklist |
 

@@ -294,7 +294,7 @@
 |-----------------------|--------------------------------|
 | ✅ OSR-1: Audit Session (4h) | ✅ OSR-6: Processo Features (4h) |
 | ✅ OSR-2: Repo Investigation (8h) | ✅ OSR-7: Public Roadmap (4h) |
-| ✅ OSR-3: Legal Foundation (6h) | OSR-8: Expansion Pack Guide (4h) |
+| ✅ OSR-3: Legal Foundation (6h) | OSR-8: Squads Guide (4h) |
 | ✅ OSR-4: GitHub Setup (3h) | ✅ OSR-9: Rebranding Synkra (4h) |
 | ✅ OSR-5: COMMUNITY.md (4h) | OSR-10: Release Checklist (4h) |
 

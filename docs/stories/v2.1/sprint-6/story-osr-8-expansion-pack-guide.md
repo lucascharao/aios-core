@@ -1,4 +1,4 @@
-# Story OSR-8: Expansion Pack Guide (Free)
+# Story OSR-8: Squads Guide (Community)
 
 **Epic:** Open-Source Community Readiness (OSR)
 **Story ID:** OSR-8
@@ -14,14 +14,17 @@
 ## 📋 User Story
 
 **Como** desenvolvedor querendo estender AIOS,
-**Quero** um guia completo para criar expansion packs,
+**Quero** um guia completo para criar Squads,
 **Para** contribuir com novos módulos sem precisar de suporte direto.
 
 ---
 
 ## 🎯 Objetivo
 
-Criar documentação abrangente que permita à comunidade criar seus próprios expansion packs gratuitos, seguindo os padrões e arquitetura do AIOS.
+Criar documentação abrangente que permita à comunidade criar seus próprios Squads gratuitos, seguindo os padrões e arquitetura do AIOS.
+
+> **Nota (OSR-4 Decision):** "Expansion Packs" foram renomeados para **"Squads"** (AIOS Squads).
+> Tagline: *"AIOS Squads: Equipes de AI agents trabalhando com você"*
 
 ---
 
@@ -29,16 +32,18 @@ Criar documentação abrangente que permita à comunidade criar seus próprios e
 
 ### 1. Guia Principal
 
-**Arquivo:** `docs/guides/expansion-pack-guide.md`
+**Arquivo:** `docs/guides/squads-guide.md`
 
 ```markdown
-# Creating Expansion Packs for AIOS
+# Creating Squads for AIOS
 
-This guide explains how to create and publish expansion packs for AIOS.
+This guide explains how to create and publish Squads for AIOS.
 
-## What is an Expansion Pack?
+> **AIOS Squads:** Equipes de AI agents trabalhando com você 🤖
 
-Expansion packs extend AIOS functionality with:
+## What is a Squad?
+
+Squads are modular teams of AI agents that extend AIOS functionality with:
 - New agents with specialized capabilities
 - Custom workflows for specific domains
 - Task libraries for common operations
@@ -51,14 +56,14 @@ Expansion packs extend AIOS functionality with:
 - Familiarity with AIOS architecture
 - Git for version control
 
-### Create Your First Pack
+### Create Your First Squad
 
 ```bash
 # Clone the template
-npx create-aios-expansion my-pack
+npx create-aios-squad my-squad
 
 # Navigate to directory
-cd my-pack
+cd my-squad
 
 # Install dependencies
 npm install
@@ -67,51 +72,57 @@ npm install
 npm run dev
 ```
 
-## Pack Structure
+## Squad Structure
 
 ```
-my-expansion-pack/
-├── manifest.json          # Pack metadata
+my-squad/
+├── squad.yaml             # Squad manifest
 ├── README.md              # Documentation
 ├── LICENSE                # License file
 ├── package.json           # npm configuration
-├── src/
-│   ├── agents/            # Agent definitions
-│   │   └── my-agent.yaml
-│   ├── tasks/             # Task workflows
-│   │   └── my-task.yaml
-│   ├── workflows/         # Multi-step workflows
-│   │   └── my-workflow.yaml
-│   └── templates/         # Templates
-│       └── my-template.md
+├── agents/                # Agent definitions
+│   └── my-agent.yaml
+├── tasks/                 # Task workflows
+│   └── my-task.yaml
+├── workflows/             # Multi-step workflows
+│   └── my-workflow.yaml
+├── templates/             # Templates
+│   └── my-template.md
 └── tests/                 # Test files
     └── my-agent.test.js
 ```
 
-## Manifest File
+## Squad Manifest
 
-The `manifest.json` defines your pack:
+The `squad.yaml` defines your Squad:
 
-```json
-{
-  "name": "my-expansion-pack",
-  "version": "1.0.0",
-  "description": "Description of what this pack does",
-  "author": "Your Name",
-  "license": "MIT",
-  "aios": {
-    "minVersion": "2.1.0",
-    "type": "expansion-pack"
-  },
-  "components": {
-    "agents": ["src/agents/*.yaml"],
-    "tasks": ["src/tasks/*.yaml"],
-    "workflows": ["src/workflows/*.yaml"],
-    "templates": ["src/templates/*.md"]
-  },
-  "dependencies": [],
-  "keywords": ["aios", "expansion-pack", "your-domain"]
-}
+```yaml
+name: my-squad
+version: 1.0.0
+description: Description of what this Squad does
+author: Your Name
+license: MIT
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+components:
+  agents:
+    - agents/*.yaml
+  tasks:
+    - tasks/*.yaml
+  workflows:
+    - workflows/*.yaml
+  templates:
+    - templates/*.md
+
+dependencies: []
+
+keywords:
+  - aios
+  - squad
+  - your-domain
 ```
 
 ## Creating Agents
@@ -153,6 +164,7 @@ system_prompt: |
 - Define clear boundaries and capabilities
 - Include helpful error messages
 - Document all commands
+- Follow AIOS Squad naming conventions
 
 ## Creating Tasks
 
@@ -228,7 +240,7 @@ error_handling:
     message: "An error occurred"
 ```
 
-## Testing Your Pack
+## Testing Your Squad
 
 ### Unit Tests
 
@@ -240,7 +252,7 @@ describe('my-agent', () => {
   let agent;
 
   beforeAll(async () => {
-    agent = await loadAgent('./src/agents/my-agent.yaml');
+    agent = await loadAgent('./agents/my-agent.yaml');
   });
 
   test('should execute my-command', async () => {
@@ -258,7 +270,7 @@ describe('my-agent', () => {
 npm test
 ```
 
-## Publishing Your Pack
+## Publishing Your Squad
 
 ### To npm (Public)
 
@@ -272,8 +284,8 @@ npm publish
 
 ### To GitHub (Alternative)
 
-1. Create repository
-2. Add topics: `aios`, `expansion-pack`
+1. Create repository in `aios-squads` org or your own
+2. Add topics: `aios`, `aios-squad`
 3. Create release with semantic version
 
 ## Integration Guidelines
@@ -293,62 +305,71 @@ npm publish
 - Use environment variables
 - Validate all inputs
 
-## Examples
+## Example Squads
 
-### Example Packs (Reference)
-- [aios-devops-pack](link) - DevOps workflows
-- [aios-docs-pack](link) - Documentation generation
-- [aios-testing-pack](link) - Testing utilities
+### Official Squads (Reference)
+- [ETL Squad](https://github.com/allfluence/aios-squads/etl) - Data collection and transformation
+- [Creator Squad](https://github.com/allfluence/aios-squads/creator) - Content generation
+- [MMOS Squad](https://github.com/allfluence/aios-squads/mmos) - Mind Model mapping
 
 ## Getting Help
 
-- GitHub Discussions: [link]
-- Discord: [link]
-- Issue Tracker: [link]
+- [GitHub Discussions](https://github.com/SynkraAI/aios-core/discussions/categories/squads)
+- [Issue Tracker](https://github.com/SynkraAI/aios-core/issues)
 
 ## Contributing Back
 
 Found an issue or have an improvement?
 - Submit bug reports
 - Propose enhancements
-- Share your pack with the community!
+- Share your Squad with the community!
+
+---
+
+*AIOS Squads: Equipes de AI agents trabalhando com você* 🤖
 ```
 
 ---
 
-### 2. Template de Expansion Pack
+### 2. Template de Squad
 
 **Criar repositório template ou arquivos:**
 
-**Arquivo:** `templates/expansion-pack/manifest.json`
+**Arquivo:** `templates/squad/squad.yaml`
 
-```json
-{
-  "name": "{{pack-name}}",
-  "version": "0.1.0",
-  "description": "{{description}}",
-  "author": "{{author}}",
-  "license": "MIT",
-  "aios": {
-    "minVersion": "2.1.0",
-    "type": "expansion-pack"
-  },
-  "components": {
-    "agents": ["src/agents/*.yaml"],
-    "tasks": ["src/tasks/*.yaml"],
-    "workflows": ["src/workflows/*.yaml"],
-    "templates": ["src/templates/*.md"]
-  },
-  "dependencies": [],
-  "keywords": ["aios", "expansion-pack"]
-}
+```yaml
+name: "{{squad-name}}"
+version: 0.1.0
+description: "{{description}}"
+author: "{{author}}"
+license: MIT
+
+aios:
+  minVersion: "2.1.0"
+  type: squad
+
+components:
+  agents:
+    - agents/*.yaml
+  tasks:
+    - tasks/*.yaml
+  workflows:
+    - workflows/*.yaml
+  templates:
+    - templates/*.md
+
+dependencies: []
+
+keywords:
+  - aios
+  - squad
 ```
 
-**Arquivo:** `templates/expansion-pack/package.json`
+**Arquivo:** `templates/squad/package.json`
 
 ```json
 {
-  "name": "{{pack-name}}",
+  "name": "{{squad-name}}",
   "version": "0.1.0",
   "description": "{{description}}",
   "main": "index.js",
@@ -357,7 +378,7 @@ Found an issue or have an improvement?
     "lint": "eslint src/",
     "dev": "aios-dev-server"
   },
-  "keywords": ["aios", "expansion-pack"],
+  "keywords": ["aios", "aios-squad"],
   "author": "{{author}}",
   "license": "MIT",
   "devDependencies": {
@@ -368,12 +389,12 @@ Found an issue or have an improvement?
 }
 ```
 
-**Arquivo:** `templates/expansion-pack/README.md`
+**Arquivo:** `templates/squad/README.md`
 
 ```markdown
-# {{Pack Name}}
+# {{Squad Name}}
 
-{{Brief description of what this expansion pack does}}
+{{Brief description of what this Squad does}}
 
 ## Installation
 
@@ -414,9 +435,9 @@ MIT License - see [LICENSE](LICENSE)
 
 ### 3. Exemplos Práticos
 
-**Criar diretório:** `docs/guides/expansion-pack-examples/`
+**Criar diretório:** `docs/guides/squad-examples/`
 
-**Arquivo:** `docs/guides/expansion-pack-examples/simple-agent.yaml`
+**Arquivo:** `docs/guides/squad-examples/simple-agent.yaml`
 
 ```yaml
 # Example: Simple Documentation Agent
@@ -455,20 +476,20 @@ system_prompt: |
 **Atualizar seção no CONTRIBUTING.md:**
 
 ```markdown
-## Creating Expansion Packs
+## Creating Squads
 
 Want to extend AIOS with new functionality?
 
-See our [Expansion Pack Guide](docs/guides/expansion-pack-guide.md) for:
-- Pack structure and manifest format
+See our [Squads Guide](docs/guides/squads-guide.md) for:
+- Squad structure and manifest format
 - Creating agents, tasks, and workflows
-- Testing and publishing your pack
+- Testing and publishing your Squad
 - Integration guidelines
 
 ### Quick Links
-- [Expansion Pack Template](templates/expansion-pack/)
-- [Example Packs](docs/guides/expansion-pack-examples/)
-- [Pack Registry](link-to-registry)
+- [Squad Template](templates/squad/)
+- [Example Squads](docs/guides/squad-examples/)
+- [Squad Registry](link-to-registry)
 ```
 
 ---
@@ -476,16 +497,16 @@ See our [Expansion Pack Guide](docs/guides/expansion-pack-guide.md) for:
 ## 🎯 Acceptance Criteria
 
 ```gherkin
-GIVEN a developer wanting to create an expansion pack
+GIVEN a developer wanting to create a Squad
 WHEN they read the documentation
 THEN they can:
-  - Understand the pack structure
-  - Create a new pack from template
+  - Understand the Squad structure
+  - Create a new Squad from template
   - Define agents, tasks, and workflows
-  - Test their pack locally
-  - Publish their pack
+  - Test their Squad locally
+  - Publish their Squad
 AND the documentation includes:
-  - Complete manifest reference
+  - Complete manifest reference (squad.yaml)
   - YAML schemas for all components
   - Working examples
   - Publishing instructions
@@ -506,12 +527,12 @@ AND the documentation includes:
 
 ## 📋 Definition of Done
 
-- [ ] Guia principal criado em `docs/guides/`
-- [ ] Template de expansion pack criado
-- [ ] Exemplos práticos incluídos
-- [ ] CONTRIBUTING.md atualizado com link
+- [ ] Guia principal criado em `docs/guides/squads-guide.md`
+- [ ] Template de Squad criado em `templates/squad/`
+- [ ] Exemplos práticos incluídos em `docs/guides/squad-examples/`
+- [ ] CONTRIBUTING.md atualizado com link para Squads Guide
 - [ ] README.md referencia o guia
-- [ ] Testado com pack de exemplo
+- [ ] Testado com Squad de exemplo
 - [ ] Stakeholder revisou e aprovou
 
 ---
@@ -519,16 +540,16 @@ AND the documentation includes:
 ## 📎 Notas Técnicas
 
 ### Escopo MVP (v2.1)
-- Apenas packs gratuitos
+- Apenas Squads gratuitos (community)
 - Publicação via npm ou GitHub
 - Sem registry centralizado (futuro)
 - Sem verificação automática (futuro)
 
 ### Futuro (v2.2+)
-- Registry centralizado de packs
+- Registry centralizado de Squads
 - Verificação e badges de qualidade
 - Marketplace visual
-- Monetização para packs premium
+- Monetização para Squads premium
 
 ---
 
