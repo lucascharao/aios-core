@@ -1,6 +1,12 @@
 ---
 task: Extract SOP from Transcript
-responsavel: "@sop-extractor"
+task_id: extract-sop
+version: 1.1.0
+execution_type: Agent
+model: Opus
+model_rationale: "SOP extraction from transcripts requires deep semantic comprehension of processes. Not deterministic."
+haiku_eligible: false
+responsavel: "@squad-chief"
 responsavel_type: agent
 atomic_layer: task
 elicit: true
@@ -17,7 +23,7 @@ config:
 
 **Squad:** squad-creator
 **Phase:** Discovery
-**Agent:** @sop-extractor
+**Agent:** @squad-chief
 **Pattern:** SC-PE-001 (SOP Extraction Standard)
 
 ## Purpose
@@ -30,7 +36,7 @@ Extract a complete, AIOS-ready Standard Operating Procedure (SOP) from a meeting
 |-------|-------|
 | task_name | Extract SOP from Transcript |
 | status | pending |
-| responsible_executor | @sop-extractor |
+| responsible_executor | @squad-chief |
 | execution_type | Hybrid (Agent extracts, Human validates) |
 | estimated_time | 1-2h per process |
 | input | transcript, domain_context |

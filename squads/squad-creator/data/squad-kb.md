@@ -2,11 +2,11 @@
 
 ## Overview
 
-This knowledge base contains comprehensive guidance on creating high-quality AIOS-FULLSTACK squads. It covers architectural patterns, best practices, design principles, and domain-specific knowledge for the Squad Architect Pack.
+This knowledge base contains comprehensive guidance on creating high-quality AIOS-FULLSTACK squads. It covers architectural patterns, best practices, design principles, and domain-specific knowledge for the Squad Architect Squad.
 
 ---
 
-## 1. EXPANSION PACK ARCHITECTURE
+## 1. SQUAD ARCHITECTURE
 
 ### 1.1 Core Concepts
 
@@ -27,21 +27,21 @@ An squad is a modular, self-contained extension to AIOS-FULLSTACK that adds doma
 - **Maintainability:** Update domain knowledge independently
 - **Community:** Enable community contributions to AIOS ecosystem
 
-### 1.2 Pack Structure Standards
+### 1.2 squad structure Standards
 
 ```
-squads/{pack-name}/
+squads/{squad-name}/
 ├── agents/              # Domain-specific AI agents
 │   ├── {agent-id}.md
 │   └── ...
 ├── checklists/          # Validation checklists
 │   ├── {checklist}.md
 │   └── ...
-├── config.yaml          # Pack metadata and configuration
+├── config.yaml          # squad metadata and configuration
 ├── data/               # Knowledge bases and reference data
 │   ├── {domain}-kb.md
 │   └── ...
-├── README.md           # Pack documentation
+├── README.md           # Squad documentation
 ├── tasks/              # Workflow definitions
 │   ├── {task-id}.md
 │   └── ...
@@ -51,7 +51,7 @@ squads/{pack-name}/
 ```
 
 **Required Files:**
-- `config.yaml` - Pack configuration and metadata
+- `config.yaml` - squad configuration and metadata
 - `README.md` - Comprehensive documentation
 - At least one agent in `agents/`
 
@@ -65,7 +65,7 @@ squads/{pack-name}/
 
 ```
 ┌─────────────┐
-│   config.yaml │  ← Pack metadata
+│   config.yaml │  ← squad metadata
 └─────────────┘
       ↓
 ┌─────────────┐
@@ -439,7 +439,7 @@ Test components together:
 1. Agent → Task execution
 2. Task → Template generation
 3. Agent → Checklist validation
-4. Cross-pack interactions
+4. cross-squad interactions
 
 **User Acceptance Testing**
 
@@ -528,7 +528,7 @@ Every component should answer:
 
 **Essential Documentation**
 
-Every pack must document:
+Every squad must document:
 1. Purpose and use cases
 2. Installation instructions
 3. Usage examples
@@ -633,7 +633,7 @@ Good error message structure:
 
 Standard syntax: `@agent-id`
 ```bash
-@legal-contract-specialist
+@{squad-name}:{agent-name}  # e.g., @legal-contract-specialist
 ```
 
 **Command Execution**
@@ -662,7 +662,7 @@ const contracts = memory.query('legal-contracts', {
 });
 ```
 
-### 9.2 Cross-Pack Collaboration
+### 9.2 cross-squad Collaboration
 
 **Dependency Declaration**
 

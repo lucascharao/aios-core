@@ -163,3 +163,28 @@ squad_config:
     debug_mode:
       environment_variable: SQUAD_CREATOR_DEBUG
       default: false
+
+  # =========================================
+  # Paths Configuration
+  # =========================================
+  # All paths are RELATIVE to project root (detected via git or package.json)
+  # NEVER use absolute paths like /Users/...
+  paths:
+    # Squad-creator internal paths (relative to squads/squad-creator/)
+    squad_root: "squads/squad-creator"
+    tasks: "squads/squad-creator/tasks"
+    agents: "squads/squad-creator/agents"
+    config: "squads/squad-creator/config"
+    scripts: "squads/squad-creator/scripts"
+
+    # Output paths (relative to project root)
+    outputs:
+      root: "outputs"
+      minds: "outputs/minds"
+      llm_tests: "outputs/llm-tests"
+      llm_test_inputs: "outputs/llm-tests/inputs"
+
+    # Infrastructure paths
+    infrastructure:
+      env_loader: "infrastructure/services/env-loader.cjs"
+      llm_router: "infrastructure/services/llm-router"

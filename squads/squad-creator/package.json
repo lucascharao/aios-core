@@ -1,16 +1,16 @@
 {
-  "name": "@aios-fullstack/expansion-creator",
+  "name": "@aios-fullstack/squad-creator",
   "version": "1.0.0",
-  "description": "Expansion Creator Pack - Tools for creating and managing AIOS expansion packs",
+  "description": "Squad Creator - Tools for creating and managing AIOS squads",
   "main": "index.js",
   "scripts": {
-    "install:expansion": "echo 'Use the tasks in this pack to install other expansion packs'"
+    "install:squad": "echo 'Use the tasks in this squad to install other squads'"
   },
   "keywords": [
     "aios",
     "aios-fullstack",
     "squad",
-    "expansion-creator",
+    "squad-creator",
     "tools"
   ],
   "author": "AIOS Team",
@@ -18,7 +18,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Pedrovaleriolopez/aios-fullstack",
-    "directory": "squads/expansion-creator"
+    "directory": "squads/squad-creator"
   },
   "engines": {
     "node": ">=18.0.0"

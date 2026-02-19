@@ -165,7 +165,7 @@ Standard configuration for tier-based squads:
 
 ```yaml
 # Squad Configuration Template
-pack:
+squad:
   name: "{squad-name}"
   title: "{Human-Readable Title}"
   version: "X.Y.Z"

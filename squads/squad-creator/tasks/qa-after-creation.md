@@ -1,10 +1,20 @@
 # Task: QA After Creation
 
 **Task ID:** qa-after-creation
-**Version:** 1.0.0
+**Version:** 1.2.0
+**Execution Type:** Hybrid (Script for structural checks + Agent for quality assessment)
 **Purpose:** Automatic quality assurance check after squad/component creation
-**Orchestrator:** @squad-architect
+**Orchestrator:** @squad-chief
 **Mode:** Automatic (triggered by creation tasks)
+**Model:** `Haiku` (QUALIFIED — Phases 1-3 are deterministic, Phase 4 scoring uses pre-computed data)
+**Haiku Eligible:** YES — structural validation via scripts, LLM interprets results
+
+**Process Specialist:** @pedro-valerio
+**Specialist Guidance:**
+- Use Process Absolutism principles for validation
+- Define VETO conditions that BLOCK, not just warn
+- For workflow/process validation, invoke: `@pedro-valerio *audit`
+- For designing quality gates, invoke: `@pedro-valerio *design-heuristic`
 
 **Core Philosophy:**
 ```
@@ -37,7 +47,7 @@ inputs:
     type: string
     required: true
     description: "Path to created component"
-    example: "squads/{your-squad}/"
+    example: "squads/my-squad/"
 
   component_type:
     type: enum
@@ -417,14 +427,14 @@ Output: "✅ Squad 'my-new-squad' created and validated (Score: 7.8/10)"
 # QA runs automatically after creation
 
 # Manual trigger
-@squad-architect
-*qa-after-creation squads/{your-squad}/ --type=squad
+@squad-chief
+*qa-after-creation squads/my-squad/ --type=squad
 
 # Check specific component
-*qa-after-creation squads/{your-squad}/agents/my-agent.md --type=agent
+*qa-after-creation squads/my-squad/agents/my-agent.md --type=agent
 
 # With auto-fix attempt
-*qa-after-creation squads/{your-squad}/ --type=squad --auto-fix
+*qa-after-creation squads/my-squad/ --type=squad --auto-fix
 ```
 
 ---
@@ -463,6 +473,7 @@ v1.0.0 (2026-02-01):
 
 ---
 
-_Task Version: 1.0.0_
+_Task Version: 1.2.0_
+_Last Updated: 2026-02-11_
 _Philosophy: No component ships without QA_
 _Triggered by: create-squad, create-agent, create-task, create-workflow_

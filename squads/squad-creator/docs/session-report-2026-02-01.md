@@ -8,11 +8,11 @@
 
 ## 1. Contexto Inicial
 
-O squad-creator existia com nomenclatura legada ("expansion pack") e não seguia os próprios padrões de qualidade que definia para outros squads.
+O squad-creator existia com nomenclatura legada ("squad") e não seguia os próprios padrões de qualidade que definia para outros squads.
 
 ### Problemas Identificados
 
-1. **Nomenclatura obsoleta:** Termo "expansion" era legado de quando o sistema se chamava "expansion-pack"
+1. **Nomenclatura obsoleta:** Termo "expansion" era legado de quando o sistema se chamava "squad"
 2. **Agent principal abaixo do padrão:** 272 linhas (mínimo: 300), sem voice_dna, sem output_examples
 3. **Frameworks criados mas não usados:** Documentação morta nos workflows
 4. **Tasks abaixo do padrão:** Maioria das tasks < 500 linhas
@@ -121,7 +121,7 @@ Criamos 4 frameworks abstraídos de padrões de squads de alta qualidade, agora 
 **Agents:**
 | Antes | Depois |
 |-------|--------|
-| `agents/expansion-creator.md` | `agents/squad-architect.md` |
+| `agents/expansion-creator.md` | `agents/squad-chief.md` |
 
 **Tasks:**
 | Antes | Depois |
@@ -150,19 +150,19 @@ Criamos 4 frameworks abstraídos de padrões de squads de alta qualidade, agora 
 ### 4.2 Referências Atualizadas
 
 Todas as referências a "expansion" foram substituídas:
-- `expansion-creator` → `squad-architect`
-- `expansion pack` → `squad`
-- `@expansion-creator` → `@squad-architect`
+- `expansion-creator` → `squad-chief`
+- `squad` → `squad`
+- `@expansion-creator` → `@squad-chief`
 - `create-expansion-*` → `create-*`
 - `expansion-*-tmpl` → `*-tmpl`
-- `install:expansion` → `install:squad`
+- `install:squad` → `install:squad`
 - `slashPrefix: expansionCreator` → `slashPrefix: squadCreator`
 
 **Referências restantes a "expansion":** 0
 
 ---
 
-## 5. Upgrade do Agent squad-architect.md
+## 5. Upgrade do Agent squad-chief.md
 
 ### 5.1 Métricas Antes/Depois
 
@@ -232,7 +232,7 @@ Substituídas por:
 ```
 squads/squad-creator/
 ├── agents/
-│   ├── squad-architect.md     # 609 linhas ✅
+│   ├── squad-chief.md     # 609 linhas ✅
 │   └── sop-extractor.md       # 142 linhas (needs upgrade)
 ├── tasks/
 │   ├── create-agent.md

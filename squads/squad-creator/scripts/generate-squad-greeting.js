@@ -21,7 +21,7 @@
  *
  * Examples:
  *   node generate-squad-greeting.js squad-creator
- *   node generate-squad-greeting.js squad-creator squad-architect
+ *   node generate-squad-greeting.js squad-creator squad-chief
  *
  * @module generate-squad-greeting
  * @version 1.1.0
@@ -112,6 +112,25 @@ function normalizeAgentDefinition(agentDef) {
   // Ensure commands array
   if (!agentDef.commands || !Array.isArray(agentDef.commands)) {
     agentDef.commands = [];
+  } else {
+    // GreetingBuilder always prefixes commands with "*".
+    // Strip leading "*" here to avoid rendering "**help".
+    agentDef.commands = agentDef.commands.map((cmd) => {
+      if (typeof cmd === 'string') {
+        return cmd.replace(/^\*+/, '');
+      }
+      if (cmd && typeof cmd === 'object') {
+        const out = { ...cmd };
+        if (typeof out.name === 'string') {
+          out.name = out.name.replace(/^\*+/, '');
+        }
+        if (typeof out.command === 'string') {
+          out.command = out.command.replace(/^\*+/, '');
+        }
+        return out;
+      }
+      return cmd;
+    });
   }
 
   return agentDef;
@@ -306,9 +325,9 @@ async function generateSquadGreeting(squadName, agentName) {
     const settings = config.settings || {};
     const activationSettings = settings.activation || {};
 
-    // Determine agent name (default to squad-architect or first agent)
+    // Determine agent name (default to squad-chief or first agent)
     if (!agentName) {
-      agentName = 'squad-architect'; // Default orchestrator
+      agentName = 'squad-chief'; // Default orchestrator
     }
 
     // Load agent definition
@@ -394,7 +413,7 @@ if (require.main === module) {
     console.error('Usage: node generate-squad-greeting.js <squad-name> [agent-name]');
     console.error('\nExamples:');
     console.error('  node generate-squad-greeting.js squad-creator');
-    console.error('  node generate-squad-greeting.js squad-creator squad-architect');
+    console.error('  node generate-squad-greeting.js squad-creator squad-chief');
     process.exit(1);
   }
 

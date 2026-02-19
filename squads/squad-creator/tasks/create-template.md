@@ -2,8 +2,9 @@
 
 **Task ID:** create-template
 **Version:** 2.0
+**Execution Type:** Hybrid
 **Purpose:** Create output templates for squad artifacts through interactive elicitation
-**Orchestrator:** @squad-architect
+**Orchestrator:** @squad-chief
 **Mode:** Elicitation-based (interactive)
 **Quality Standard:** AIOS Level (300+ lines, valid YAML/MD)
 
@@ -23,10 +24,10 @@ This task creates output templates for AIOS squads. Templates define the structu
 - Validation criteria defined
 
 ```
-INPUT (template_purpose + pack_name)
+INPUT (template_purpose + squad_name)
     ↓
 [PHASE 0: CONTEXT]
-    → Identify target pack
+    → Identify target squad
     → Define template identity
     ↓
 [PHASE 1: STRUCTURE]
@@ -53,16 +54,16 @@ OUTPUT: Template file + Quality Gate PASS
 |-----------|------|----------|-------------|---------|
 | `template_name` | string | Yes | Human-readable name | `"Legal Contract"` |
 | `template_id` | string | Yes | kebab-case identifier | `"legal-contract"` |
-| `pack_name` | string | Yes | Target squad | `"legal"` |
+| `squad_name` | string | Yes | Target squad | `"legal"` |
 | `output_format` | enum | Yes | `md`, `yaml`, `json`, `html` | `"md"` |
 
 ---
 
 ## Preconditions
 
-- [ ] Target pack exists at `squads/{pack_name}/`
-- [ ] squad-architect agent is active
-- [ ] Write permissions for `squads/{pack_name}/templates/`
+- [ ] Target squad exists at `squads/{squad_name}/`
+- [ ] squad-chief agent is active
+- [ ] Write permissions for `squads/{squad_name}/templates/`
 
 ---
 
@@ -71,18 +72,18 @@ OUTPUT: Template file + Quality Gate PASS
 **Duration:** 2-5 minutes
 **Mode:** Interactive
 
-### Step 0.1: Identify Target Pack
+### Step 0.1: Identify Target Squad
 
 **Actions:**
 ```yaml
-identify_pack:
+identify_squad:
   validation:
-    - check_path: "squads/{pack_name}/"
+    - check_path: "squads/{squad_name}/"
     - check_exists: true
     - load_config: "config.yaml"
 
   on_not_exists:
-    - suggest: "Create pack first"
+    - suggest: "Create squad first"
     - option: "Create template standalone"
 ```
 
@@ -98,7 +99,7 @@ elicit_identity:
   template_id:
     question: "What is the template ID? (kebab-case)"
     example: "legal-contract"
-    validation: "Must be unique within pack"
+    validation: "Must be unique within squad"
 
   output_format:
     question: "What format should the output be?"
@@ -139,7 +140,7 @@ elicit_mode:
 **Output (PHASE 0):**
 ```yaml
 phase_0_output:
-  pack_name: "legal"
+  squad_name: "legal"
   template_id: "legal-contract"
   output_format: "md"
   workflow_mode: "interactive"
@@ -343,7 +344,7 @@ compile_template:
     - placeholders: "documentation"
     - validation: "rules"
 
-  output_location: "squads/{pack_name}/templates/{template_id}.yaml"
+  output_location: "squads/{squad_name}/templates/{template_id}.yaml"
 ```
 
 ### Step 3.2: Run Quality Gate SC_TPL_001
@@ -384,7 +385,7 @@ run_quality_gate:
 **Actions:**
 ```yaml
 save_template:
-  path: "squads/{pack_name}/templates/{template_id}.yaml"
+  path: "squads/{squad_name}/templates/{template_id}.yaml"
 
   post_save:
     - verify_yaml_valid
@@ -397,7 +398,7 @@ save_template:
 phase_3_output:
   quality_score: 8.0/10
   blocking_requirements: "ALL PASS"
-  template_file: "squads/{your-squad}/templates/legal-contract.yaml"
+  template_file: "squads/{squad-name}/templates/{template-name}.yaml"  # Example
   status: "PASS"
 ```
 
@@ -407,8 +408,8 @@ phase_3_output:
 
 | Output | Location | Description |
 |--------|----------|-------------|
-| Template File | `squads/{pack_name}/templates/{template_id}.yaml` | Complete template |
-| Updated README | `squads/{pack_name}/README.md` | Template added |
+| Template File | `squads/{squad_name}/templates/{template_id}.yaml` | Complete template |
+| Updated README | `squads/{squad_name}/README.md` | Template added |
 
 ---
 

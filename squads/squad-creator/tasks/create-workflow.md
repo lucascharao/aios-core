@@ -1,10 +1,13 @@
 # Task: Create Squad Workflow
 
 **Task ID:** create-workflow
-**Version:** 2.0
+**Version:** 2.0.1
+**Execution Type:** Hybrid (Agent for design + elicitation, deterministic for validation)
 **Purpose:** Create multi-phase workflows that orchestrate complex operations across agents
-**Orchestrator:** @squad-architect
+**Orchestrator:** @squad-chief
 **Mode:** Elicitation-based (interactive)
+**Model:** `Sonnet` (requires creative synthesis for phase/checkpoint design)
+**Haiku Eligible:** NO — creative design decisions, not deterministic
 **Quality Standard:** AIOS Level (500+ lines, 3+ phases, checkpoints)
 
 **Frameworks Used:**
@@ -27,7 +30,7 @@ This task guides the creation of multi-phase workflows that orchestrate complex 
 - Inline structures for domain-specific guidance
 
 ```
-INPUT (workflow_purpose + pack_name)
+INPUT (workflow_purpose + squad_name)
     ↓
 [PHASE 0: CLASSIFICATION]
     → Validate workflow criteria
@@ -89,7 +92,7 @@ workflow_criteria:
 |-----------|------|----------|-------------|---------|
 | `workflow_name` | string | Yes | Human-readable name | `"High-Ticket Sales Pipeline"` |
 | `workflow_id` | string | Yes | kebab-case identifier | `"high-ticket-sales"` |
-| `pack_name` | string | Yes | Target squad | `"copy"` |
+| `squad_name` | string | Yes | Target squad | `"copy"` |
 | `duration` | string | Yes | Expected duration | `"7-10 days"` |
 | `phase_count` | int | Yes | Number of phases (min 3) | `5` |
 
@@ -97,11 +100,19 @@ workflow_criteria:
 
 ## Preconditions
 
-- [ ] Target pack exists at `squads/{pack_name}/`
-- [ ] squad-architect agent is active
+- [ ] Target squad exists at `squads/{squad_name}/`
+- [ ] squad-chief agent is active
 - [ ] Agents for the workflow exist (or will be created)
-- [ ] Write permissions for `squads/{pack_name}/workflows/`
+- [ ] Write permissions for `squads/{squad_name}/workflows/`
 - [ ] Workflow criteria validated (not a task)
+- [ ] Apply `squads/squad-creator/protocols/ai-first-governance.md`
+
+## AI-First Governance Gate (Mandatory)
+
+- [ ] Map `Existing -> Gap -> Decision` before phase design
+- [ ] Validate canonical references for tasks/checklists/data
+- [ ] Explicitly track unresolved items and contradictions
+- [ ] Avoid absolute completion claims when dependencies are not fully implemented
 
 ---
 
@@ -154,7 +165,7 @@ elicit_identity:
   workflow_id:
     question: "What is the workflow ID? (kebab-case)"
     example: "high-ticket-sales"
-    validation: "Must be unique within pack"
+    validation: "Must be unique within squad"
 
   duration:
     question: "What is the expected duration?"
@@ -189,7 +200,7 @@ phase_0_output:
   workflow_name: "High-Ticket Sales Pipeline"
   workflow_id: "high-ticket-sales"
   duration: "7-10 days"
-  pack_name: "copy"
+  squad_name: "copy"
   phase_count: 5
   criteria_validated: true
 ```
@@ -464,7 +475,7 @@ elicit_agents:
   for_each_phase:
     - "Which agent is PRIMARY for Phase {N}?"
     - "Which agents SUPPORT this phase?"
-    - "Are these agents defined in the pack?"
+    - "Are these agents defined in the squad?"
 ```
 
 ### Step 3.2: Define Handoff Points
@@ -539,7 +550,7 @@ compile_workflow:
     - quality_checklist: "Per-phase criteria"
     - metadata: "Version, created, etc."
 
-  output_location: "squads/{pack_name}/workflows/wf-{workflow_id}.yaml"
+  output_location: "squads/{squad_name}/workflows/wf-{workflow_id}.yaml"
 ```
 
 ### Step 4.2: Run Quality Gate SC_WFL_001
@@ -591,7 +602,7 @@ run_quality_gate:
 **Actions:**
 ```yaml
 save_workflow:
-  path: "squads/{pack_name}/workflows/wf-{workflow_id}.yaml"
+  path: "squads/{squad_name}/workflows/wf-{workflow_id}.yaml"
 
   post_save:
     - verify_yaml_valid
@@ -605,7 +616,7 @@ save_workflow:
 phase_4_output:
   quality_score: 8.5/10
   blocking_requirements: "ALL PASS"
-  workflow_file: "squads/{your-squad}/workflows/wf-high-ticket-sales.yaml"
+  workflow_file: "squads/{squad-name}/workflows/{workflow-name}.yaml"  # Example
   lines: 650
   status: "PASS"
 ```
@@ -625,7 +636,7 @@ present_summary:
   workflow_created:
     name: "High-Ticket Sales Pipeline"
     id: "wf-high-ticket-sales"
-    file: "squads/{your-squad}/workflows/wf-high-ticket-sales.yaml"
+    file: "squads/{squad-name}/workflows/{workflow-name}.yaml"  # Example
     lines: 650
 
   structure:
@@ -645,9 +656,9 @@ present_summary:
 
 | Output | Location | Description |
 |--------|----------|-------------|
-| Workflow File | `squads/{pack_name}/workflows/wf-{workflow_id}.yaml` | Complete workflow |
-| Updated README | `squads/{pack_name}/README.md` | Workflow added |
-| Updated Config | `squads/{pack_name}/config.yaml` | Workflow registered |
+| Workflow File | `squads/{squad_name}/workflows/wf-{workflow_id}.yaml` | Complete workflow |
+| Updated README | `squads/{squad_name}/README.md` | Workflow added |
+| Updated Config | `squads/{squad_name}/config.yaml` | Workflow registered |
 
 ---
 
@@ -715,6 +726,6 @@ This task creates workflows that:
 
 ---
 
-_Task Version: 2.0_
-_Last Updated: 2026-02-01_
+_Task Version: 2.0.1_
+_Last Updated: 2026-02-11_
 _Lines: 550+_

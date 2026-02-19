@@ -326,7 +326,7 @@ integration_checks:
 
 ```bash
 # Run quality gate on agent file
-*validate-agent squads/{pack}/agents/{agent}.md
+*validate-agent squads/{squad}/agents/{agent}.md
 ```
 
 ### Manual Validation Checklist

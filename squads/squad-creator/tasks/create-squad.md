@@ -2,8 +2,9 @@
 
 **Task ID:** create-squad
 **Version:** 2.0
+**Execution Type:** Hybrid
 **Purpose:** Create a complete AIOS-FULLSTACK squad through guided elicitation, research, and validation
-**Orchestrator:** @squad-architect
+**Orchestrator:** @squad-chief
 **Mode:** Incremental (human checkpoints) or YOLO (autonomous)
 **Quality Standard:** AIOS Level (all components meet minimum standards)
 
@@ -19,11 +20,21 @@
 
 This task creates a complete, production-ready squad with all required components: agents, tasks, workflows, templates, checklists, and knowledge bases. The key insight: **squads must be built on researched elite minds, not generic bots**.
 
+**Context-first entrypoint (recommended):**
+- Run `detect-squad-context` first.
+- If context is `greenfield_pure`, `pre_existing_brief`, or `partial_squad`, route to `wf-context-aware-create-squad`.
+- If context is `legacy_assets`, route to `wf-brownfield-upgrade-squad`.
+
 **v2.0 Changes:**
 - Mandatory research loop before any agent creation
 - PHASE-based structure with checkpoints
 - Quality gates with blocking requirements
 - Framework integration at every decision point
+
+**Token economy rule (commands):**
+- Keep primary commands only in `commands`.
+- Store PT-BR aliases once in `command_aliases_ptbr`.
+- Do not duplicate aliases in `commands`, `command_visibility`, and `all_commands`.
 
 ```
 INPUT (domain + purpose + target_user)
@@ -43,7 +54,7 @@ INPUT (domain + purpose + target_user)
     → Design quality gates
     ↓
 [PHASE 3: CREATION]
-    → Create agents (research-then-create-agent.md)
+    → Create agents (wf-research-then-create-agent.yaml)
     → Create workflows with checkpoints
     → Create tasks with Task Anatomy
     ↓
@@ -71,13 +82,13 @@ OUTPUT: Complete squad + Quality Score
 | `target_user` | string | Yes | Who will use this squad | `"Marketing teams at SaaS companies"` |
 | `use_cases` | list | Yes | 3-5 key use cases | `["sales pages", "email sequences", "ads"]` |
 | `mode` | enum | Yes | `"incremental"` or `"yolo"` | `"incremental"` |
-| `pack_name` | string | No | Override default name | `"copy"` |
+| `squad_name` | string | No | Override default name | `"copy"` |
 
 ---
 
 ## Preconditions
 
-- [ ] squad-architect agent is active
+- [ ] squad-chief agent is active
 - [ ] WebSearch tool available (for research)
 - [ ] Write permissions for `squads/` directory
 - [ ] Frameworks loaded: tier-system, quality-dimensions, decision-heuristics, executor-matrix
@@ -89,6 +100,33 @@ OUTPUT: Complete squad + Quality Score
 **Duration:** 5-10 minutes
 **Checkpoint:** SC_DSC_001 (Discovery Complete)
 **Mode:** Interactive (both modes)
+
+### Step 0.0: Workspace Domain Awareness
+
+**Actions:**
+```yaml
+workspace_domain_check:
+  read_files:
+    - "workspace/workspace.yaml"          # Lista de domínios e providers
+    - "workspace/domains/"                # Domínios existentes
+    - "workspace/products/"               # Produtos existentes
+
+  checks:
+    - domain_exists_in_workspace: "workspace/domains/{domain}/ existe?"
+    - product_alignment: "Squad serve qual produto em workspace/products/?"
+    - provider_overlap: "Squad usa providers já declarados em workspace.yaml?"
+
+  output:
+    workspace_context:
+      domain_match: "exact | partial | none"
+      related_products: ["list"]
+      available_providers: ["list"]
+      existing_squads_for_domain: ["list"]
+
+  behavior:
+    domain_exists: "Informar ao usuário que o domínio já tem definições no workspace. Squad deve alinhar com entities.yaml e workflows.yaml do domínio."
+    domain_not_exists: "Prosseguir normalmente. Após criação, sugerir criação de workspace/domains/{domain}/"
+```
 
 ### Step 0.1: Validate Domain Viability
 
@@ -124,6 +162,39 @@ ELSE:
     → SUGGEST: "Consider researching domain first or choosing adjacent domain"
 ```
 
+### Step 0.1.5: Workspace Domain Awareness
+
+**Actions:**
+```yaml
+workspace_domain_check:
+  read_files:
+    - "workspace/workspace.yaml"          # Domínios e providers registrados
+    - "workspace/domains/"                # Domínios existentes
+    - "workspace/products/"               # Produtos existentes
+
+  analysis:
+    - domain_exists: "workspace/domains/{domain}/ existe?"
+    - domain_has_entities: "workspace/domains/{domain}/entities.yaml existe?"
+    - domain_has_workflows: "workspace/domains/{domain}/workflows.yaml existe?"
+    - related_products: "Quais produtos referenciam este domínio?"
+    - provider_alignment: "Quais providers o domínio usa?"
+
+  output:
+    workspace_context:
+      domain_exists: true | false
+      entities_count: N
+      workflows_count: N
+      related_products: ["product_a", "product_b"]
+      providers: ["clickup", "supabase"]
+    recommendation: "Alinhar agentes do squad com entidades e workflows existentes no workspace"
+```
+
+**Usage:**
+- Se `workspace/domains/{domain}/` existe → informar squad-chief para que agentes respeitem entidades existentes
+- Se `workspace/domains/{domain}/entities.yaml` existe → incluir entidades como contexto nos agentes criados
+- Se `workspace/products/` tem produtos relevantes → alinhar use cases com produtos existentes
+- Informação é **read-only** — não modifica workspace, apenas enriquece o contexto da criação
+
 ### Step 0.2: Check Existing Squads
 
 **Actions:**
@@ -132,7 +203,7 @@ existing_squad_check:
   search_paths:
     - "squads/{similar_names}/"
     - "squads/*/{domain}*"
-    - ".claude/commands/*/{domain}*"
+    - ".claude/agents/*/{domain}*"
 
   analysis:
     - existing_coverage: "What does existing squad cover?"
@@ -155,21 +226,21 @@ ELSE:
     → PROCEED to Phase 1
 ```
 
-### Step 0.3: Define Pack Structure
+### Step 0.3: Define Squad Structure
 
 **Actions:**
 ```yaml
 pack_structure_elicitation:
   required:
-    - pack_name: "kebab-case identifier"
+    - squad_name: "kebab-case identifier"
     - pack_title: "Human-readable title"
     - version: "1.0.0"
     - author: "Organization or person"
     - slash_prefix: "camelCase for commands"
 
   derived:
-    - pack_path: "squads/{pack_name}/"
-    - command_path: ".claude/commands/{PackTitle}/"
+    - pack_path: "squads/{squad_name}/"
+    - command_path: ".claude/agents/{PackTitle}/"
 
   pattern_library:
     - prefix: "2-letter code (e.g., CP for Copy)"
@@ -184,7 +255,7 @@ pack_structure_elicitation:
 phase_0_output:
   viability_score: 8/10
   decision: "create_new"
-  pack_name: "copy"
+  squad_name: "copy"
   pack_title: "Copy Squad"
   slash_prefix: "copy"
   pattern_prefix: "CP"
@@ -198,7 +269,7 @@ name: "Discovery Complete"
 blocking: true
 criteria:
   - viability_score >= 6
-  - pack_name defined
+  - squad_name defined
   - no duplicate squad
 ```
 
@@ -385,14 +456,14 @@ quality_gates_design:
 
 **Output (PHASE 2):**
 ```yaml
-phase_2_output:
+phase_2_output:  # [Example]
   tier_structure:
-    orchestrator: "copy-chief"
-    tier_0: ["eugene-schwartz", "claude-hopkins"]
-    tier_1: ["gary-halbert", "gary-bencivenga"]
-    tier_2: ["dan-kennedy", "todd-brown"]
-    tier_3: ["email-specialist", "ad-specialist"]
-    tools: ["quality-checker", "headline-scorer"]
+    orchestrator: "{squad}-chief"
+    tier_0: ["{diagnosis-agent-1}", "{diagnosis-agent-2}"]
+    tier_1: ["{master-agent-1}", "{master-agent-2}"]
+    tier_2: ["{systematizer-1}", "{systematizer-2}"]
+    tier_3: ["{specialist-1}", "{specialist-2}"]
+    tools: ["{tool-1}", "{tool-2}"]
 
   quality_gates: 5
   handoffs: 12
@@ -427,7 +498,7 @@ criteria:
 **Actions:**
 ```yaml
 create_directories:
-  base: "squads/{pack_name}/"
+  base: "squads/{squad_name}/"
   subdirectories:
     - agents/
     - tasks/
@@ -447,13 +518,13 @@ create_directories:
 **Execute workflow for each mind:**
 ```yaml
 for_each_mind:
-  workflow: "workflows/research-then-create-agent.md"
+  workflow: "workflows/wf-research-then-create-agent.yaml"
   inputs:
     agent_purpose: "{derived from mind's expertise}"
     domain: "{domain}"
     specialist_slug: "{mind_slug}"
     specialist_name: "{mind_name}"
-    pack_name: "{pack_name}"
+    squad_name: "{squad_name}"
 
   quality_gate:
     # Each agent must pass SC_AGT_001
@@ -467,7 +538,7 @@ for_each_mind:
 **Special agent creation:**
 ```yaml
 create_orchestrator:
-  agent_id: "{pack_name}-chief"
+  agent_id: "{squad_name}-chief"
   role: "Squad Orchestrator"
   tier: "orchestrator"
 
@@ -582,7 +653,7 @@ wire_dependencies:
 **Actions:**
 ```yaml
 create_knowledge_base:
-  file: "data/{pack_name}-kb.md"
+  file: "data/{squad_name}-kb.md"
 
   sections:
     - domain_overview: "What this domain is about"
@@ -727,9 +798,9 @@ present_summary:
     - tier_coverage: "Full (0-3 + tools)"
 
   activation:
-    - install: "npm run install:squad {pack_name}"
-    - activate: "@{pack_name}"
-    - example: "@copy:sales-page-writer"
+    - install: "npm run install:squad {squad_name}"
+    - activate: "@{squad_name}"
+    - example: "@{squad-name}:{agent-name}"  # e.g., @copy:sales-page-writer
 ```
 
 ### Step 6.2: Document Next Steps
@@ -755,22 +826,22 @@ next_steps:
 
 | Output | Location | Description |
 |--------|----------|-------------|
-| Squad Directory | `squads/{pack_name}/` | Complete squad structure |
-| Agents | `squads/{pack_name}/agents/` | All agent definitions |
-| Workflows | `squads/{pack_name}/workflows/` | Multi-phase workflows |
-| Tasks | `squads/{pack_name}/tasks/` | Atomic tasks |
-| Templates | `squads/{pack_name}/templates/` | Output templates |
-| Checklists | `squads/{pack_name}/checklists/` | Validation checklists |
-| Knowledge Base | `squads/{pack_name}/data/{pack_name}-kb.md` | Domain knowledge |
-| Documentation | `squads/{pack_name}/README.md` | Usage documentation |
-| Config | `squads/{pack_name}/config.yaml` | Pack configuration |
+| Squad Directory | `squads/{squad_name}/` | Complete squad structure |
+| Agents | `squads/{squad_name}/agents/` | All agent definitions |
+| Workflows | `squads/{squad_name}/workflows/` | Multi-phase workflows |
+| Tasks | `squads/{squad_name}/tasks/` | Atomic tasks |
+| Templates | `squads/{squad_name}/templates/` | Output templates |
+| Checklists | `squads/{squad_name}/checklists/` | Validation checklists |
+| Knowledge Base | `squads/{squad_name}/data/{squad_name}-kb.md` | Domain knowledge |
+| Documentation | `squads/{squad_name}/README.md` | Usage documentation |
+| Config | `squads/{squad_name}/config.yaml` | Squad configuration |
 
 ---
 
 ## Validation Criteria (All Must Pass)
 
 ### Structure
-- [ ] Pack directory exists at `squads/{pack_name}/`
+- [ ] Squad directory exists at `squads/{squad_name}/`
 - [ ] All required subdirectories created
 - [ ] config.yaml is valid YAML
 

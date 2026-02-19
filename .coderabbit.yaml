@@ -2,13 +2,17 @@
 # AIOS CodeRabbit Configuration
 # Story: COLLAB-1, 12.11
 # Created: 2025-12-30
-# Updated: 2026-02-05 (Story 12.11 - Bob CI/CD Pipeline)
+# Updated: 2026-02-06 (QA Gate for Squads)
 #
 # CodeRabbit provides AI-powered code review for pull requests
 # Documentation: https://docs.coderabbit.ai/getting-started/yaml-configuration
 
 language: "en-US"
-tone_instructions: "Be professional, constructive, and focused on code quality."
+tone_instructions: |
+  Act as a strict but constructive Quality Assurance reviewer.
+  Flag security issues, bugs, and anti-patterns with high priority.
+  Enforce AIOS coding standards (ES2022, single quotes, 2-space indent, absolute imports).
+  Be direct about blocking issues. Praise good patterns when found.
 early_access: false
 
 reviews:
@@ -17,7 +21,11 @@ reviews:
     enabled: true
     base_branches:
       - main
-    drafts: false
+      - develop
+      - "feat/*"
+      - "fix/*"
+      - "release/*"
+    drafts: true
 
   # Review behavior
   request_changes_workflow: true
@@ -76,25 +84,55 @@ reviews:
         Check placeholder syntax is consistent.
         Validate template produces valid output.
 
+    - path: "squads/**"
+      instructions: |
+        Squad expansion packs — verify structure follows AIOS squad conventions.
+        Check that all agent references are valid.
+        Validate squad config and dependencies.
+        Ensure no conflicts with core agents or other squads.
+
     - path: ".github/**"
       instructions: |
         Review for security implications.
-        Check for proper secret handling.
+        Check for proper secret handling (no hardcoded tokens/keys).
         Validate workflow syntax.
         Ensure consistent with existing CI patterns.
+        Check that workflow permissions follow least-privilege principle.
 
     - path: "**/*.js"
       instructions: |
-        Check for async/await best practices.
-        Verify error handling is comprehensive.
-        Look for potential security vulnerabilities.
-        Ensure code follows AIOS coding standards (ES2022, single quotes, 2-space indent).
+        QA Checklist:
+        - async/await best practices (no floating promises)
+        - Error handling with proper context (try/catch, error messages)
+        - No console.log in production code (use logger)
+        - No hardcoded credentials or secrets
+        - AIOS coding standards (ES2022, single quotes, 2-space indent)
+        - Absolute imports only (no relative paths like ../)
 
     - path: "**/*.ts"
       instructions: |
-        Verify TypeScript types are properly defined.
-        Check for any 'any' type usage that should be more specific.
-        Ensure exports are properly typed.
+        QA Checklist:
+        - TypeScript types properly defined (no 'any')
+        - Exports properly typed with interfaces
+        - Props interfaces defined for all components
+        - Absolute imports only (no relative paths like ../)
+
+    - path: "**/*.tsx"
+      instructions: |
+        QA Checklist:
+        - Component has Props interface
+        - No inline styles (use CSS modules or Tailwind)
+        - Proper key props in lists
+        - No 'any' types
+        - Accessibility: alt text, aria labels where needed
+        - Absolute imports only
+
+    - path: "**/*.test.*"
+      instructions: |
+        Verify test coverage is meaningful (not just snapshot tests).
+        Check edge cases are covered.
+        Ensure test descriptions are clear and follow Given/When/Then or similar pattern.
+        Validate mocks are properly cleaned up.
 
 # Chat settings
 chat:

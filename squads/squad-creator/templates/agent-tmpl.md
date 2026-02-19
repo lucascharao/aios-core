@@ -11,6 +11,16 @@ template:
     format: markdown
     filename: "agents/{{agent_id}}.md"
 
+  specialists:
+    mind_cloning: "@oalanicolas"
+    process_validation: "@pedro-valerio"
+    notes: |
+      For mind-based agents (cloned from real experts):
+      - Invoke @oalanicolas for DNA extraction: *extract-dna, *assess-sources
+      - Use DNA Mental™ 8-Layer Architecture for complete clone
+      For process/workflow validation:
+      - Invoke @pedro-valerio for: *audit, *design-heuristic, *veto-check
+
   architecture: |
     Hybrid approach combining:
     - Full persona/voice/frameworks INLINE (always loaded)
@@ -65,7 +75,7 @@ ACTIVATION-NOTICE: |
   External files are loaded ON-DEMAND when commands are executed.
 
 IDE-FILE-RESOLUTION:
-  base_path: "squads/{{pack_name}}"
+  base_path: "squads/{{squad_name}}"
   resolution_pattern: "{base_path}/{type}/{name}"
   types:
     - tasks
@@ -80,6 +90,12 @@ REQUEST-RESOLUTION: |
   - "{{example_request_1}}" → *{{command_1}} → loads {{task_1}}
   - "{{example_request_2}}" → *{{command_2}} → loads {{task_2}}
   ALWAYS ask for clarification if no clear match.
+
+# AI-FIRST GOVERNANCE: mandatory before final claims
+AI-FIRST-GOVERNANCE: |
+  Apply squads/squad-creator/protocols/ai-first-governance.md
+  before final recommendations, completion claims, or handoffs.
+  Use canonical sources and expose unresolved items.
 
 # CRITICAL: Loader rules that MUST be followed
 activation-instructions:

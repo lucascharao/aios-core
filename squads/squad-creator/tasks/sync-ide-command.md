@@ -6,7 +6,9 @@ atomic_layer: task
 status: active
 sprint: 9
 story: SQC-12
-version: 1.0.0
+version: 1.1.0
+execution_type: Worker
+worker_script: scripts/sync-ide-command.py
 Entrada: |
   - type: agent | task | workflow | squad (obrigatório)
   - name: Nome do componente para sincronizar (obrigatório)
@@ -33,57 +35,57 @@ Sincroniza agents, tasks, workflows ou squads inteiros para todas as configuraç
 ## Uso
 
 ```bash
-# Sincronizar um agent específico
-*command agent legal-chief
+# Sincronizar um agent específico (example)
+*command agent {agent-name}
 
 # Sincronizar uma task
-*command task revisar-contrato
+*command task {task-name}
 
 # Sincronizar um workflow
-*command workflow legal-workflow
+*command workflow {workflow-name}
 
 # Sincronizar squad inteiro (todos os componentes)
-*command squad legal
+*command squad {squad-name}
 
 # Preview sem executar
-*command agent legal-chief --dry-run
+*command agent {agent-name} --dry-run
 
 # Forçar sobrescrita
-*command squad legal --force
+*command squad {squad-name} --force
 ```
 
 ## Output Exemplo
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *command squad legal
+ *command squad {squad-name}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📋 Loading sync configuration...
    Active IDEs: claude, cursor
-   Pack alias: legal → Legal
+   Squad alias: {squad-name} → {SquadName}
 
-📦 Syncing squad: {your-squad}
+📦 Syncing squad: {squad-name}
 
 Step 1: Locating source files
-   ✓ squads/{your-squad}/config.yaml
-   ✓ Found 3 agents
-   ✓ Found 5 tasks
-   ✓ Found 2 checklists
-   ✓ Found 1 data file
+   ✓ squads/{squad-name}/config.yaml
+   ✓ Found N agents
+   ✓ Found N tasks
+   ✓ Found N checklists
+   ✓ Found N data file
 
 Step 2: Syncing to Claude Code
-   ✓ .claude/commands/MySquad/agents/main-agent.md
-   ✓ .claude/commands/MySquad/agents/assistant.md
-   ✓ .claude/commands/MySquad/agents/reviewer.md
-   ✓ .claude/commands/MySquad/tasks/main-task.md
-   ✓ .claude/commands/MySquad/tasks/review-task.md
-   ... (4 tasks, 6 checklists, 1 data)
+   ✓ .claude/agents/{SquadName}/agents/{agent-1}.md
+   ✓ .claude/agents/{SquadName}/agents/{agent-2}.md
+   ✓ .claude/agents/{SquadName}/agents/{agent-3}.md
+   ... (N agents)
+   ✓ .claude/agents/{SquadName}/tasks/{task-name}.md
+   ... (N tasks, N checklists, N data)
 
 Step 3: Syncing to Cursor
-   ✓ .cursor/rules/legal-chief.mdc
-   ✓ .cursor/rules/brad-feld.mdc
-   ... (8 agents converted to MDC)
+   ✓ .cursor/rules/{agent-1}.mdc
+   ✓ .cursor/rules/{agent-2}.mdc
+   ... (N agents converted to MDC)
 
 Step 4: Validation
    ✓ All files validated
@@ -99,8 +101,8 @@ Summary:
   IDEs synced:    2
 
 🚀 Commands available:
-   /Legal:agents:legal-chief (Claude Code)
-   @legal-chief (Cursor rule)
+   /{Squad}:agents:{agent-name} (Claude Code)
+   @{agent-name} (Cursor rule)
 ```
 
 ## Configuração
@@ -112,17 +114,16 @@ O sistema usa `.aios-sync.yaml` na raiz do projeto para configuração:
 ```yaml
 # IDEs ativas para sincronização
 active_ides:
-  - claude    # .claude/commands/
+  - claude    # .claude/agents/
   - cursor    # .cursor/rules/
   # - windsurf  # .windsurf/ (descomentar para ativar)
   # - gemini    # .gemini/
 
-# Mapeamento de diretório → prefixo de comando
-pack_aliases:
-  legal: Legal
-  copy: Copy
-  hr: HR
-  data: Data
+# Mapeamento de diretório → prefixo de comando (examples)
+squad_aliases:
+  {squad-name-1}: {SquadName1}  # Example: legal: Legal
+  {squad-name-2}: {SquadName2}  # Example: copy: Copy
+  # Add your squads here
 
 # Mapeamentos de sincronização
 sync_mappings:
@@ -130,7 +131,7 @@ sync_mappings:
     source: "squads/*/agents/"
     destinations:
       claude:
-        - path: ".claude/commands/{pack}/agents/"
+        - path: ".claude/agents/{slashPrefix}/agents/"
           format: "md"
       cursor:
         - path: ".cursor/rules/"
@@ -138,15 +139,14 @@ sync_mappings:
           wrapper: "cursor-rule"
 ```
 
-### Pack Aliases
+### Squad Aliases
 
-O `pack_aliases` mapeia o nome do diretório do squad para o prefixo usado nos comandos:
+O `squad_aliases` mapeia o nome do diretório do squad para o prefixo usado nos comandos:
 
 | Diretório | Alias | Comando Claude |
 |-----------|-------|----------------|
-| `squads/{your-squad}/` | `MySquad` | `/MySquad:agents:main-agent` |
-| `squads/another-squad/` | `AnotherSquad` | `/AnotherSquad:agents:chief` |
-| `squads/squad-creator/` | `SquadCreator` | `/SquadCreator:agents:squad-architect` |
+| `squads/{squad-name}/` | `{SquadName}` | `/{SquadName}:agents:{agent-name}` |
+<!-- Example: squads/legal/ | Legal | /Legal:agents:legal-chief -->
 
 ## Workflow Interno
 
@@ -159,7 +159,7 @@ O `pack_aliases` mapeia o nome do diretório do squad para o prefixo usado nos c
 │     ↓                                             │
 │  2. Load .aios-sync.yaml                          │
 │     ↓ (not found → create default)                │
-│  3. Resolve pack alias                            │
+│  3. Resolve squad alias                            │
 │     ↓                                             │
 │  4. Locate source files in squads/                │
 │     ↓ (not found → error)                         │
@@ -167,7 +167,7 @@ O `pack_aliases` mapeia o nome do diretório do squad para o prefixo usado nos c
 │     ↓ (exists + no --force → ask)                 │
 │  6. For each active IDE:                          │
 │     │                                             │
-│     ├── Claude: Copy MD → .claude/commands/       │
+│     ├── Claude: Copy MD → .claude/agents/       │
 │     ├── Cursor: Convert MD → MDC                  │
 │     ├── Gemini: Copy MD → .gemini/agents/         │
 │     └── Windsurf: Copy MD → .windsurf/            │
@@ -189,7 +189,7 @@ Cursor usa formato MDC com frontmatter YAML:
 
 **Entrada (MD):**
 ```markdown
-# legal-chief
+# {agent-name}
 
 ACTIVATION-NOTICE: This file contains...
 
@@ -200,12 +200,12 @@ ACTIVATION-NOTICE: This file contains...
 **Saída (MDC):**
 ```markdown
 ---
-description: Diretor Jurídico & Orquestrador de Especialistas
+description: {Agent description from config}
 globs: []
 alwaysApply: false
 ---
 
-# legal-chief
+# {agent-name}
 
 ACTIVATION-NOTICE: This file contains...
 ...
@@ -234,20 +234,20 @@ A description é extraída de:
 
 Sincroniza um arquivo de agent:
 - Source: `squads/{squad}/agents/{name}.md`
-- Claude: `.claude/commands/{Pack}/agents/{name}.md`
+- Claude: `.claude/agents/{slashPrefix}/agents/{name}.md`
 - Cursor: `.cursor/rules/{name}.mdc`
 
 ### Task (`*command task {name}`)
 
 Sincroniza um arquivo de task:
 - Source: `squads/{squad}/tasks/{name}.md`
-- Claude: `.claude/commands/{Pack}/tasks/{name}.md`
+- Claude: `.claude/agents/{slashPrefix}/tasks/{name}.md`
 
 ### Workflow (`*command workflow {name}`)
 
 Sincroniza um arquivo de workflow:
 - Source: `squads/{squad}/workflows/{name}.yaml`
-- Claude: `.claude/commands/{Pack}/workflows/{name}.yaml`
+- Claude: `.claude/agents/{slashPrefix}/workflows/{name}.yaml`
 
 ### Squad (`*command squad {name}`)
 
@@ -264,7 +264,7 @@ Sincroniza TODOS os componentes de um squad:
 | Error | Causa | Solução |
 |-------|-------|---------|
 | `Source not found` | Arquivo não existe em squads/ | Verifique o nome e tipo |
-| `Pack alias not found` | Squad não está em pack_aliases | Adicione ao .aios-sync.yaml |
+| `Squad alias not found` | Squad não está em squad_aliases | Adicione ao .aios-sync.yaml |
 | `File exists` | Destino já existe | Use --force ou escolha ação |
 | `IDE not active` | IDE não está em active_ides | Ative no .aios-sync.yaml |
 | `Invalid YAML` | Arquivo fonte com YAML inválido | Corrija o arquivo fonte |
@@ -288,7 +288,7 @@ if (!validTypes.includes(type)) {
 // 3. Carregar configuração
 const syncConfig = loadYaml('.aios-sync.yaml');
 const activeIdes = syncConfig.active_ides || ['claude'];
-const packAliases = syncConfig.pack_aliases || {};
+const squadAliases = syncConfig.squad_aliases || {};
 
 // 4. Localizar source
 let sourceFiles = [];
@@ -305,7 +305,7 @@ if (type === 'squad') {
   sourceFiles = [sourceFile];
 }
 
-// 5. Determinar pack alias
+// 5. Determinar squad alias
 const squadName = extractSquadName(sourceFiles[0]);
 const packAlias = packAliases[squadName] || capitalize(squadName);
 

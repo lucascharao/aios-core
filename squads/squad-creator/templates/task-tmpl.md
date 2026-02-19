@@ -1,7 +1,17 @@
 template:
   id: squad-task-template-v2
   name: Squad Task
-  version: 2.0
+  version: 2.1
+  specialists:
+    process_design: "@pedro-valerio"
+    mind_extraction: "@oalanicolas"
+    notes: |
+      For tasks involving mind cloning or DNA extraction:
+      - Add `specialist: "@oalanicolas"` to frontmatter
+      - Add `specialist_guidance:` with relevant instructions
+      For tasks involving workflows, validation, or checklists:
+      - Add `specialist: "@pedro-valerio"` to frontmatter
+      - Add `specialist_guidance:` with process design guidance
   output:
     format: markdown
     filename: "tasks/{{task_id}}.md"
@@ -61,6 +71,7 @@ task_anatomy:
     - templates          # Array of template IDs to use
     - quality_gate       # Quality gate configuration
     - handoff            # Handoff configuration
+    - governance_protocol # e.g., squads/squad-creator/protocols/ai-first-governance.md
 
 executor_types:
   Human:
@@ -113,7 +124,7 @@ sections:
       - Quality gate
       - Handoff configuration
 
-      Output file location: `squads/{{pack_name}}/tasks/{{task_id}}.md`
+      Output file location: `squads/{{squad_name}}/tasks/{{task_id}}.md`
 
   - id: task-header
     title: Task Header
@@ -125,6 +136,18 @@ sections:
       **Pattern:** HO-TP-001 (Task Anatomy Standard)
       **Version:** {{version}}
       **Last Updated:** {{last_updated}}
+      **Governance Protocol:** `{{governance_protocol}}`
+
+  - id: ai-first-governance-gate
+    title: AI-First Governance Gate
+    instruction: Add mandatory governance checks before task execution/closure.
+    template: |
+      ## AI-First Governance Gate
+
+      - [ ] Applied `{{governance_protocol}}`
+      - [ ] Mapped `Existing -> Gap -> Decision`
+      - [ ] Validated canonical sources
+      - [ ] Documented contradictions and unresolved items
 
   - id: task-anatomy-table
     title: Task Anatomy Table

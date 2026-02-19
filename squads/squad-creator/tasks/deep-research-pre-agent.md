@@ -1,5 +1,7 @@
 # Deep Research Pre-Agent Task
 
+**Execution Type:** Agent
+
 ## Purpose
 
 Generate a comprehensive deep research prompt and execute research to establish the knowledge foundation BEFORE creating an agent. This ensures agents are built on REAL methodologies from domain experts, not generic LLM knowledge.
@@ -13,7 +15,7 @@ Generate a comprehensive deep research prompt and execute research to establish 
 
 **Gold Standard Reference:**
 - Research: `docs/research/david-ogilvy-research-engineering-meta-framework.md` (1,179 lines)
-- Task: `squads/{your-squad}/tasks/copysearch.md` (921 lines) - Example from Copy squad
+- Task: `squads/{squad-name}/tasks/{task-name}.md` (921 lines) - Example task
 
 ## Inputs
 
@@ -457,7 +459,7 @@ EXPECTED RESULTS:
 ```
 
 **Output:**
-- `docs/research/gary-halbert-sales-page-research.md` (2,100+ lines)
+- `docs/research/{expert-slug}-{topic}-research.md` (2,100+ lines)  <!-- Example: gary-halbert-sales-page-research.md -->
 - Quality Score: 92%
 
 ---
@@ -540,7 +542,7 @@ EXPECTED RESULTS:
 ## Integration Notes
 
 This task is called by:
-- `workflows/research-then-create-agent.md` (Steps 2-5)
+- `workflows/wf-research-then-create-agent.yaml` (Steps 2-5)
 
 This task calls:
 - WebSearch tool (for external research)
@@ -563,4 +565,4 @@ This task calls:
 
 **Task Version:** 1.0.0
 **Created:** 2026-01-22
-**Part of:** squads/squad-architect
+**Part of:** squads/squad-creator

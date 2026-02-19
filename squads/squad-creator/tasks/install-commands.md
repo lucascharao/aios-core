@@ -1,19 +1,24 @@
 # /install-commands Task
 
+**Task ID:** install-commands
+**Version:** 1.1.0
+**Execution Type:** `Worker` (100% deterministic file operations)
+**Worker Script:** `scripts/sync-ide-command.py` (use: `python3 scripts/sync-ide-command.py squad {name}`)
+
 When this command is used, execute the following task:
 
 # Install Squad Commands
 
 ## Purpose
 
-To convert squad agents into Claude Code commands and install them in the `.claude/commands/` directory, making the squad agents accessible via the `@{squad}:{agent}` syntax in all supported IDEs.
+To convert squad agents into Claude Code commands and install them in the `.claude/agents/` directory, making the squad agents accessible via the `@{squad}:{agent}` syntax in all supported IDEs.
 
 ## Inputs
 
 - Squad name (from user or discovery)
-- Squad path: `squads/{pack_name}/`
+- Squad path: `squads/{squad_name}/`
 - Existing squad structure:
-  - `config.yaml` - Pack metadata
+  - `config.yaml` - Squad metadata
   - `agents/` - Agent definitions (markdown)
   - `tasks/` - Task workflows (markdown)
   - `templates/` - Output templates
@@ -22,19 +27,19 @@ To convert squad agents into Claude Code commands and install them in the `.clau
 
 ### 1. Validate Squad Exists
 
-**Ask user for pack name if not provided:**
+**Ask user for squad name if not provided:**
 ```
 Which squad would you like to install?
 Available packs: [list directories in squads/]
 ```
 
-**Check pack structure:**
-- Verify `squads/{pack_name}/config.yaml` exists
-- Verify `squads/{pack_name}/agents/` directory exists
+**Check squad structure:**
+- Verify `squads/{squad_name}/config.yaml` exists
+- Verify `squads/{squad_name}/agents/` directory exists
 - Load `config.yaml` to get:
-  - `name` - Pack identifier
+  - `name` - Squad identifier
   - `slashPrefix` - Command prefix (e.g., "legalAssistant")
-  - `version` - Pack version
+  - `version` - Squad version
 
 **Validation output:**
 ```
@@ -52,24 +57,24 @@ Available packs: [list directories in squads/]
 
 **Create directories:**
 ```
-.claude/commands/{slashPrefix}/
+.claude/agents/{slashPrefix}/
 ├── agents/          # Converted agent commands
 └── tasks/           # Symlink or copy of tasks/
 ```
 
 **Execution:**
-- Use mkdir to create `.claude/commands/{slashPrefix}/`
-- Use mkdir to create `.claude/commands/{slashPrefix}/agents/`
-- Use mkdir to create `.claude/commands/{slashPrefix}/tasks/`
+- Use mkdir to create `.claude/agents/{slashPrefix}/`
+- Use mkdir to create `.claude/agents/{slashPrefix}/agents/`
+- Use mkdir to create `.claude/agents/{slashPrefix}/tasks/`
 
 **Confirmation:**
 ```
-✅ Created command structure: .claude/commands/{slashPrefix}/
+✅ Created command structure: .claude/agents/{slashPrefix}/
 ```
 
 ### 3. Convert Each Agent to Claude Code Format
 
-**For each file in `squads/{pack_name}/agents/*.md`:**
+**For each file in `squads/{squad_name}/agents/*.md`:**
 
 **Step 3.1: Read source agent file**
 - Parse agent metadata (lines 1-6):
@@ -102,9 +107,9 @@ CRITICAL: Read the full YAML BLOCK that FOLLOWS IN THIS FILE to understand your 
 ```yaml
 IDE-FILE-RESOLUTION:
   - FOR LATER USE ONLY - NOT FOR ACTIVATION, when executing commands that reference dependencies
-  - Dependencies map to squads/{pack_name}/{type}/{name}
+  - Dependencies map to squads/{squad_name}/{type}/{name}
   - type=folder (tasks|templates|checklists|data|utils|etc...), name=file-name
-  - Example: {task}.md → squads/{pack_name}/tasks/{task}.md
+  - Example: {task}.md → squads/{squad_name}/tasks/{task}.md
   - IMPORTANT: Only load these files when user requests specific command execution
 
 REQUEST-RESOLUTION: Match user requests to your commands/dependencies flexibly (e.g., "install legal"→*install-commands→install-commands task), ALWAYS ask for clarification if no clear match.
@@ -127,7 +132,7 @@ agent:
   id: {agent-id}
   title: {Agent Title/Role}
   icon: {emoji} # Choose appropriate emoji based on role
-  squad: {pack_name}
+  squad: {squad_name}
   whenToUse: {When to use this agent - extract from persona/focus}
   customization: null
 
@@ -182,26 +187,26 @@ integration_points:
    - Documentation → 📝
 3. **Commands**: Extract all `*command-name` from ## Commands section
 4. **Task references**: Convert relative paths to absolute:
-   - `tasks/{task-name}.md` → `squads/{pack_name}/tasks/{task-name}.md`
+   - `tasks/{task-name}.md` → `squads/{squad_name}/tasks/{task-name}.md`
 5. **Preserve**: All persona details, expertise, style, focus
 
 **Step 3.3: Write converted command**
-- Target path: `.claude/commands/{slashPrefix}/agents/{agent-id}.md`
+- Target path: `.claude/agents/{slashPrefix}/agents/{agent-id}.md`
 - Use Write tool to create file
 - Confirm creation: `✅ Converted: {agent-id}`
 
 ### 4. Copy Task References
 
-**For each task in `squads/{pack_name}/tasks/*.md`:**
+**For each task in `squads/{squad_name}/tasks/*.md`:**
 
 **Option A: Symlink (Unix/Linux/Mac)**
 ```bash
-ln -s "$(pwd)/squads/{pack_name}/tasks/{task}.md" ".claude/commands/{slashPrefix}/tasks/{task}.md"
+ln -s "$(pwd)/squads/{squad_name}/tasks/{task}.md" ".claude/agents/{slashPrefix}/tasks/{task}.md"
 ```
 
 **Option B: Copy (Windows/Universal)**
 ```bash
-cp "squads/{pack_name}/tasks/{task}.md" ".claude/commands/{slashPrefix}/tasks/{task}.md"
+cp "squads/{squad_name}/tasks/{task}.md" ".claude/agents/{slashPrefix}/tasks/{task}.md"
 ```
 
 **Execution:**
@@ -217,9 +222,9 @@ cp "squads/{pack_name}/tasks/{task}.md" ".claude/commands/{slashPrefix}/tasks/{t
 
 ### 5. Generate Installation Summary
 
-**Create `.claude/commands/{slashPrefix}/README.md`:**
+**Create `.claude/agents/{slashPrefix}/README.md`:**
 ```markdown
-# {Pack Name} - Installed Commands
+# {Squad Name} - Installed Commands
 
 **Version**: {version}
 **Installed**: {timestamp}
@@ -237,35 +242,35 @@ cp "squads/{pack_name}/tasks/{task}.md" ".claude/commands/{slashPrefix}/tasks/{t
 \```
 
 ### Example workflows:
-{Extract example from pack README or provide generic}
+{Extract example from squad README or provide generic}
 
 ## Documentation
 
-- **Pack README**: `squads/{pack_name}/README.md`
-- **User Guide**: `squads/{pack_name}/GUIA-DO-USUARIO.md` (if exists)
-- **Agent Details**: `squads/{pack_name}/agents/`
-- **Task Workflows**: `squads/{pack_name}/tasks/`
+- **Squad README**: `squads/{squad_name}/README.md`
+- **User Guide**: `squads/{squad_name}/GUIA-DO-USUARIO.md` (if exists)
+- **Agent Details**: `squads/{squad_name}/agents/`
+- **Task Workflows**: `squads/{squad_name}/tasks/`
 
 ## Uninstall
 
 To remove this squad:
 \```bash
-rm -rf .claude/commands/{slashPrefix}
+rm -rf .claude/agents/{slashPrefix}
 \```
 ```
 
 **Confirmation:**
 ```
-📋 Installation summary: .claude/commands/{slashPrefix}/README.md
+📋 Installation summary: .claude/agents/{slashPrefix}/README.md
 ```
 
 ### 6. Final Validation
 
 **Run validation checks:**
-1. Verify all agents converted: `ls .claude/commands/{slashPrefix}/agents/*.md`
+1. Verify all agents converted: `ls .claude/agents/{slashPrefix}/agents/*.md`
 2. Count files:
-   - Source agents: `ls squads/{pack_name}/agents/*.md | wc -l`
-   - Installed commands: `ls .claude/commands/{slashPrefix}/agents/*.md | wc -l`
+   - Source agents: `ls squads/{squad_name}/agents/*.md | wc -l`
+   - Installed commands: `ls .claude/agents/{slashPrefix}/agents/*.md | wc -l`
 3. Validate YAML syntax in each converted file (basic check for ```yaml blocks)
 
 **If counts don't match:**
@@ -277,7 +282,7 @@ rm -rf .claude/commands/{slashPrefix}
 ```
 ✅ INSTALLATION COMPLETE
 
-Squad: {pack_name} v{version}
+Squad: {squad_name} v{version}
 Agents installed: {count}
 Commands available:
 
@@ -294,9 +299,9 @@ Try it:
 ## Outputs
 
 **Files created:**
-- `.claude/commands/{slashPrefix}/agents/*.md` - Converted agent commands (1 per agent)
-- `.claude/commands/{slashPrefix}/tasks/*.md` - Task workflows (copied/symlinked)
-- `.claude/commands/{slashPrefix}/README.md` - Installation summary
+- `.claude/agents/{slashPrefix}/agents/*.md` - Converted agent commands (1 per agent)
+- `.claude/agents/{slashPrefix}/tasks/*.md` - Task workflows (copied/symlinked)
+- `.claude/agents/{slashPrefix}/README.md` - Installation summary
 
 **Terminal output:**
 - Installation progress log
@@ -319,16 +324,16 @@ Try it:
 
 2. **Read the documentation:**
    ```
-   Check: squads/{pack_name}/README.md
+   Check: squads/{squad_name}/README.md
    ```
 
 3. **Start using:**
    ```
-   {Provide example workflow from pack}
+   {Provide example workflow from squad}
    ```
 
 4. **Share with team:**
-   - Commit `.claude/commands/{slashPrefix}/` to git if team-shared
+   - Commit `.claude/agents/{slashPrefix}/` to git if team-shared
    - Or keep in `.gitignore` if personal installation
 
 ## Error Handling
@@ -337,13 +342,13 @@ Try it:
 
 ### Error: "Squad not found"
 ```
-Solution: Check pack name
+Solution: Check squad name
 Command: ls squads/
 ```
 
 ### Error: "config.yaml missing"
 ```
-Solution: Pack incomplete, create config.yaml
+Solution: Squad incomplete, create config.yaml
 Command: *create-squad
 ```
 
@@ -351,18 +356,18 @@ Command: *create-squad
 ```
 Cause: Malformed agent markdown
 Solution: Review agent file structure, fix sections
-Reference: squad-architect/templates/agent-tmpl.md
+Reference: squad-chief/templates/agent-tmpl.md
 ```
 
 ### Error: "Permission denied"
 ```
-Cause: Write permissions on .claude/commands/
+Cause: Write permissions on .claude/agents/
 Solution: Check directory permissions
-Command: chmod +w .claude/commands/
+Command: chmod +w .claude/agents/
 ```
 
 ---
 
 **Task Version**: 1.0.0
 **Last Updated**: 2025-10-06
-**Squad**: squad-architect
+**Squad**: squad-chief

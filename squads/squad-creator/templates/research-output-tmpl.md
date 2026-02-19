@@ -8,13 +8,15 @@
 
 ## Template Variables
 
+> **Nota:** Exemplos usam copywriting. Substitua pelo seu domínio e experts.
+
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `{{specialist_name}}` | Expert name | "Gary Halbert" |
-| `{{activity}}` | Specific activity | "Sales Page Creation" |
-| `{{domain}}` | Domain area | "copywriting" |
+| `{{specialist_name}}` | Expert name | "{expert-name}" |
+| `{{activity}}` | Specific activity | "{activity-name}" |
+| `{{domain}}` | Domain area | "{domain}" |
 | `{{date}}` | Research date | "2026-01-22" |
-| `{{agent_purpose}}` | What agent will do | "Create high-converting sales pages" |
+| `{{agent_purpose}}` | What agent will do | "{agent-purpose-description}" |
 
 ---
 
@@ -619,5 +621,5 @@ Based on this research:
 
 **Template Version:** 1.0.0
 **Created:** 2026-01-22
-**Part of:** squads/squad-architect
+**Part of:** squads/squad-creator
 **Validates Against:** checklists/deep-research-quality.md

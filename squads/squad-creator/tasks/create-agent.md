@@ -1,16 +1,105 @@
 # Task: Create Squad Agent
 
 **Task ID:** create-agent
-**Version:** 2.0
+**Version:** 2.3
+**Execution Type:** Agent
+**Execution Rationale:** "Marked as Agent (not Hybrid) because no Worker script exists. Core operations (research, extraction, creation) require LLM interpretation. Preflight validations (squad exists, sources count) could be scripted in future."
+**Model:** Opus
+**Model Rationale:** "Research + synthesis + creative generation = non-deterministic"
 **Purpose:** Create a single domain-specific agent through research, elicitation, and validation
-**Orchestrator:** @squad-architect
+**Orchestrator:** @squad-chief
+**DNA Specialist:** @oalanicolas
 **Mode:** Research-first (never create without research)
 **Quality Standard:** AIOS Level (300+ lines, voice_dna, output_examples)
+
+> **Nota:** Este documento usa copywriting como exemplo ilustrativo. Substitua pelo seu domínio e experts relevantes.
+
+**Specialists:**
+- **@oalanicolas** → Invoke for DNA extraction (Voice DNA, Thinking DNA, source curation)
+  - Use `*extract-dna {specialist}` for complete DNA Mental™ extraction
+  - Use `*assess-sources` to classify sources as ouro vs bronze
+  - Consult when agent voice feels generic or inauthentic
 
 **Frameworks Used:**
 - `data/tier-system-framework.md` → Agent tier classification (Phase 2)
 - `data/quality-dimensions-framework.md` → Agent validation (Phase 4)
 - `data/decision-heuristics-framework.md` → Quality gate logic (Phase 4)
+
+---
+
+## OPTIONAL PREFLIGHT: Run Validation Script
+
+```
+OPTIONAL but RECOMMENDED — catches issues early:
+
+  python3 squads/squad-creator/scripts/create-agent-preflight.py \
+    --squad {squad_name} \
+    --specialist {specialist_slug} \
+    --format text
+
+What script validates (deterministic):
+  ✅ Squad exists at squads/{squad}/
+  ✅ Squad has config.yaml
+  ✅ Count existing agents
+  ✅ Check local sources exist
+  ✅ Count source files and lines
+  ✅ Estimate coverage percentage
+  ✅ Validate naming conventions
+
+IF Status = BLOCKED → Fix issues before proceeding
+IF Status = READY with warnings → Review but can proceed
+```
+
+---
+
+## DESIGN RULES (Non-Negotiable)
+
+```yaml
+self_contained:
+  rule: "Squad DEVE ser self-contained - tudo dentro da pasta do squad"
+  allowed:
+    - "squads/{squad-name}/agents/*.md"
+    - "squads/{squad-name}/tasks/*.md"
+    - "squads/{squad-name}/data/*.yaml"
+    - "squads/{squad-name}/checklists/*.md"
+    - "squads/{squad-name}/minds/**/*"
+  forbidden:
+    - "outputs/minds/*"  # DNA extraído deve ser INTEGRADO, não referenciado
+    - ".aios-core/*"     # Não depender de core externo
+    - "docs/*"           # Documentação externa
+  exception: "Mission router pode lazy-load tasks/data DO PRÓPRIO squad"
+
+functional_over_philosophical:
+  rule: "Agent deve saber FAZER o trabalho, não ser clone perfeito"
+  include:
+    - "SCOPE - o que faz/não faz"
+    - "Heuristics - regras SE/ENTÃO para decisões"
+    - "Core methodology - como executar a função INLINE"
+    - "Voice DNA condensado - tom + 5 signature phrases"
+    - "Handoff + Veto - quando parar/delegar"
+    - "Output examples - calibração de output"
+  exclude_or_condense:
+    - "Psychometric completo → 1 parágrafo"
+    - "Values hierarchy 16 itens → top 5 relevantes à função"
+    - "Core obsessions 7 itens → 3 relevantes à função"
+    - "Productive paradoxes → remover se não operacional"
+    - "Dual persona → só se função exige múltiplos modos"
+
+curadoria_over_volume:
+  rule: "Menos mas melhor - curadoria > volume"
+  targets:
+    agent_lines: "400-800 lines focadas > 1500 lines dispersas"
+    heuristics: "10 heuristics úteis > 30 genéricas"
+    signature_phrases: "5 verificáveis > 20 inferidas"
+  mantra: "Se entrar cocô, sai cocô do outro lado"
+```
+
+**VETO CONDITIONS:**
+- ❌ Agent referencia arquivo fora do squad → VETO
+- ❌ Agent tem >50% de conteúdo filosófico vs operacional → VETO
+- ❌ Agent não tem SCOPE definido → VETO
+- ❌ Agent não tem heuristics de decisão → VETO
+- ❌ Agent não tem output examples → VETO
 
 ---
 
@@ -28,7 +117,7 @@ This task creates a single high-quality agent based on researched methodologies 
 INPUT (agent_purpose + domain + [specialist])
     ↓
 [PHASE 0: CONTEXT]
-    → Identify target pack
+    → Identify target squad
     → Check if specialist-based or generic
     ↓
 [PHASE 1: RESEARCH]
@@ -64,16 +153,24 @@ OUTPUT: Agent file + Quality Gate PASS
 | `domain` | string | Yes | Domain/area of expertise | `"copywriting"` |
 | `specialist_slug` | string | No | If based on human expert (snake_case) | `"gary_halbert"` |
 | `specialist_name` | string | No | Human-readable name | `"Gary Halbert"` |
-| `pack_name` | string | Yes | Target squad | `"copy"` |
+| `squad_name` | string | Yes | Target squad | `"copy"` |
 
 ---
 
 ## Preconditions
 
-- [ ] Target pack exists at `squads/{pack_name}/`
-- [ ] squad-architect agent is active
+- [ ] Target squad exists at `squads/{squad_name}/`
+- [ ] squad-chief agent is active
 - [ ] WebSearch tool available (for research)
-- [ ] Write permissions for `squads/{pack_name}/agents/`
+- [ ] Write permissions for `squads/{squad_name}/agents/`
+- [ ] Apply `squads/squad-creator/protocols/ai-first-governance.md`
+
+## AI-First Governance Gate (Mandatory)
+
+- [ ] Map `Existing -> Gap -> Decision` before creating agent
+- [ ] Validate canonical sources (squad config/tasks/workflows/data)
+- [ ] Mark dependency status: `implemented | partial | concept`
+- [ ] List unresolved items; do not claim full completion if any unresolved
 
 ---
 
@@ -83,13 +180,13 @@ OUTPUT: Agent file + Quality Gate PASS
 **Checkpoint:** None (fast validation)
 **Mode:** Automatic
 
-### Step 0.1: Identify Target Pack
+### Step 0.1: Identify Target Squad
 
 **Actions:**
 ```yaml
-identify_pack:
+identify_squad:
   validation:
-    - check_path: "squads/{pack_name}/"
+    - check_path: "squads/{squad_name}/"
     - check_exists: true
     - load_config: "config.yaml"
 
@@ -100,12 +197,12 @@ identify_pack:
 
 **Decision Point:**
 ```
-IF pack_name provided AND pack exists:
+IF squad_name provided AND squad exists:
     → PROCEED
-ELSE IF pack_name provided AND NOT exists:
-    → ASK: "Pack doesn't exist. Create it first?"
+ELSE IF squad_name provided AND NOT exists:
+    → ASK: "Squad doesn't exist. Create it first?"
 ELSE:
-    → ASK: "Which pack should this agent belong to?"
+    → ASK: "Which squad should this agent belong to?"
 ```
 
 ### Step 0.2: Classify Agent Type
@@ -126,14 +223,15 @@ classify_agent_type:
 
 **Output (PHASE 0):**
 ```yaml
+# Example output - values will vary based on your squad
 phase_0_output:
-  pack_name: "copy"
-  pack_path: "squads/{your-squad}/"
+  squad_name: "{squad-name}"
+  pack_path: "squads/{squad-name}/"
   agent_type: "specialist_based"
   specialist:
-    slug: "gary_halbert"
-    name: "Gary Halbert"
-  agent_id: "expert-agent"  # derived
+    slug: "{expert_slug}"
+    name: "{Expert Name}"
+  agent_id: "{expert-slug}"  # derived
 ```
 
 ---
@@ -595,7 +693,7 @@ fix_blocking_issues:
 **Actions:**
 ```yaml
 save_agent:
-  path: "squads/{pack_name}/agents/{agent_id}.md"
+  path: "squads/{squad_name}/agents/{agent_id}.md"
 
   post_save:
     - verify_yaml_valid
@@ -606,10 +704,11 @@ save_agent:
 
 **Output (PHASE 4):**
 ```yaml
+# Example output - values will vary based on your squad
 phase_4_output:
   quality_score: 8.3/10
   blocking_requirements: "ALL PASS"
-  agent_file: "squads/{your-squad}/agents/expert-agent.md"
+  agent_file: "squads/{squad-name}/agents/{agent-name}.md"
   lines: 750
   status: "PASS"
 ```
@@ -625,12 +724,13 @@ phase_4_output:
 
 **Actions:**
 ```yaml
+# Example output - values will vary based on your squad
 present_summary:
   agent_created:
-    name: "Gary Halbert"
-    id: "expert-agent"
+    name: "{Expert Name}"
+    id: "{agent-name}"
     tier: 1
-    file: "squads/{your-squad}/agents/expert-agent.md"
+    file: "squads/{squad-name}/agents/{agent-name}.md"
     lines: 750
 
   quality:
@@ -639,8 +739,8 @@ present_summary:
     voice_dna: "Complete"
 
   activation:
-    command: "@copy:expert-agent"
-    example: "Write a sales page for a fitness program"
+    command: "@{squad-name}:{agent-name}"  # e.g., "@{squad-name}:{agent-name}"
+    example: "{example task for this agent}"
 
   commands:
     - "*help - Show available commands"
@@ -663,7 +763,7 @@ next_steps:
     - "Build workflows that use this agent"
 
   handoff_to:
-    - agent: "squad-architect"
+    - agent: "squad-chief"
       when: "Continue building squad"
     - agent: "created-agent"
       when: "Ready to use agent"
@@ -675,10 +775,10 @@ next_steps:
 
 | Output | Location | Description |
 |--------|----------|-------------|
-| Agent File | `squads/{pack_name}/agents/{agent_id}.md` | Complete agent definition |
+| Agent File | `squads/{squad_name}/agents/{agent_id}.md` | Complete agent definition |
 | Research File | `docs/research/{specialist_slug}-{purpose}-research.md` | Research documentation |
-| Updated README | `squads/{pack_name}/README.md` | Agent added to list |
-| Updated Config | `squads/{pack_name}/config.yaml` | Agent registered |
+| Updated README | `squads/{squad_name}/README.md` | Agent added to list |
+| Updated Config | `squads/{squad_name}/config.yaml` | Agent registered |
 
 ---
 
@@ -743,7 +843,7 @@ error_handling:
 
 This task creates agents that:
 - Follow AIOS agent definition standards (6 levels)
-- Can be activated with @pack:agent-id syntax
+- Can be activated with @squad:agent-id syntax
 - Integrate with memory layer
 - Support standard command patterns (*help, *exit, etc.)
 - Work within squad structure

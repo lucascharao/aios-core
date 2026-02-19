@@ -38,6 +38,7 @@ workflow_anatomy:
     - outputs          # Artifacts produced
     - agents_by_phase  # Agent assignments
     - quality_checklist # Final validation
+    - governance_gate   # AI-first governance checks
     - metadata
 
   phase_requirements:
@@ -251,6 +252,32 @@ sections:
           - "[ ] {{this}}"
           {{/each}}
         {{/each}}
+
+  - id: governance-gate
+    title: Governance Gate
+    instruction: |
+      Add a governance gate with canonical-source validation and contradiction checks.
+      CI should block only deterministic checks; semantic checks stay in workflow checkpoints.
+    template: |
+      # ═══════════════════════════════════════════════════════════════════════════════
+      # GOVERNANCE GATE
+      # ═══════════════════════════════════════════════════════════════════════════════
+      governance_gate:
+        protocol: "squads/squad-creator/protocols/ai-first-governance.md"
+        required_checks:
+          - "Existing -> Gap -> Decision mapped"
+          - "Canonical sources validated"
+          - "Contradictions documented"
+          - "Unresolved items explicit"
+
+        ci_policy:
+          blocking_deterministic_only: true
+          deterministic_checks:
+            - "syntax/schema"
+            - "broken references"
+            - "required files presence"
+            - "security/secrets"
+          semantic_checks_enforced_in_workflow: true
 
   - id: metadata
     title: Metadata

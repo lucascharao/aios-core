@@ -5,7 +5,7 @@ template:
   output:
     format: yaml
     filename: config.yaml
-    title: "{{pack_name}} Configuration"
+    title: "{{squad_name}} Configuration"
 
 workflow:
   mode: interactive
@@ -19,22 +19,22 @@ sections:
       This template generates the config.yaml file for a new AIOS squad.
 
       Gather the following information from the user:
-      - Pack name (kebab-case, e.g., 'legal-assistant')
+      - Squad name (kebab-case, e.g., 'legal-assistant')
       - Short title (human-readable, e.g., 'Legal Assistant')
-      - Description (brief explanation of pack purpose)
+      - Description (brief explanation of squad purpose)
       - Author (person or organization)
       - Slash prefix (camelCase for commands, e.g., 'legalAssistant')
 
-      Output file location: `squads/{{pack_name}}/config.yaml`
+      Output file location: `squads/{{squad_name}}/config.yaml`
 
-  - id: pack-metadata
+  - id: squad-metadata
     title: Squad Metadata
     instruction: |
-      Elicit pack metadata from user. Ensure pack_name uses kebab-case and slash_prefix uses camelCase.
+      Elicit squad metadata from user. Ensure squad_name uses kebab-case and slash_prefix uses camelCase.
     elicit: true
     template: |
-      pack:
-        name: {{pack_name}}
+      squad:
+        name: {{squad_name}}
         version: {{version}}
         short-title: {{short_title}}
         description: >-
@@ -44,10 +44,10 @@ sections:
         slashPrefix: {{slash_prefix}}
     examples:
       - |
-        pack:
+        squad:
           name: legal-assistant
           version: 1.0.0
-          short-title: Legal Assistant Pack
+          short-title: Legal Assistant Squad
           description: >-
             This squad provides specialized agents, tasks, and templates
             for legal professionals. It automates document drafting, case analysis,
@@ -346,7 +346,7 @@ sections:
       Validate the generated config.yaml:
       - Ensure all required fields are present
       - Verify YAML syntax is correct
-      - Check that pack_name matches directory name
+      - Check that squad_name matches directory name
       - Confirm slash_prefix is unique
 
       If validation fails, prompt user to correct issues.

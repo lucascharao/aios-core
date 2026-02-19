@@ -101,7 +101,7 @@ show_help() {
 Usage: ./validate-squad.sh <squad-name> [options]
 
 Arguments:
-  squad-name    Name of squad to validate (e.g., "squad-creator", "squad-creator")
+  squad-name    Name of squad to validate (e.g., "my-squad", "new-squad")
 
 Options:
   --verbose     Show all checks and Claude analysis details
@@ -111,10 +111,10 @@ Options:
   --help        Show this help message
 
 Examples:
-  ./validate-squad.sh squad-creator      # Full validation with Opus
-  ./validate-squad.sh squad-creator --verbose # Verbose output
-  ./validate-squad.sh squad-creator --quick   # Deterministic only (no Claude)
-  ./validate-squad.sh squad-creator --fast    # Quick validation with Haiku
+  ./validate-squad.sh {squad-name}              # Full validation with Opus
+  ./validate-squad.sh {squad-name} --verbose    # Verbose output
+  ./validate-squad.sh {squad-name} --quick      # Deterministic only (no Claude)
+  ./validate-squad.sh {squad-name} --fast       # Quick validation with Haiku
 
 Exit Codes:
   0  PASS     Score >= 7.0, no blocking issues
@@ -228,7 +228,7 @@ check_structure() {
   if [[ -f "$SQUAD_DIR/config.yaml" ]]; then
     log_pass "config.yaml exists"
 
-    # Check for name (top-level or under pack:)
+    # Check for name (top-level or under squad:/pack:)
     if grep -qE "^name:|^[[:space:]]+name:" "$SQUAD_DIR/config.yaml" 2>/dev/null; then
       log_pass "config.yaml has 'name' field"
     else
@@ -236,7 +236,7 @@ check_structure() {
       tier1_fail=$((tier1_fail + 1))
     fi
 
-    # Check for version (top-level or under pack:)
+    # Check for version (top-level or under squad:/pack:)
     if grep -qE "^version:|^[[:space:]]+version:" "$SQUAD_DIR/config.yaml" 2>/dev/null; then
       log_pass "config.yaml has 'version' field"
     else
@@ -244,7 +244,7 @@ check_structure() {
       tier1_fail=$((tier1_fail + 1))
     fi
 
-    # Check for entry_agent (top-level, under pack:, or in agents list)
+    # Check for entry_agent (top-level, under squad:/pack:, or in agents list)
     if grep -q "entry_agent:" "$SQUAD_DIR/config.yaml" 2>/dev/null; then
       log_pass "config.yaml has 'entry_agent' field"
       ENTRY_AGENT=$(grep "entry_agent:" "$SQUAD_DIR/config.yaml" | head -1 | sed 's/.*entry_agent:[[:space:]]*//' | tr -d '"' | tr -d "'" | xargs)
@@ -527,7 +527,23 @@ check_production() {
       log_warn "outputs/ exists but is empty"
     fi
   else
-    log_warn "No outputs/ directory found - squad not tested in production"
+    # Check global outputs directory for this squad (uses env var or relative path)
+    local global_outputs="${OUTPUTS_DIR:-./outputs}"
+    if [ -d "$global_outputs" ]; then
+      local squad_outputs=$(find "$global_outputs" -type d -name "*$SQUAD_NAME*" 2>/dev/null | head -1)
+      if [ -n "$squad_outputs" ] && [ -d "$squad_outputs" ]; then
+        local output_count=$(find "$squad_outputs" -type f 2>/dev/null | wc -l | tr -d ' ')
+        if [ "$output_count" -gt 0 ]; then
+          log_pass "Found outputs in global directory ($output_count files)"
+          has_outputs=true
+          prod_score=$((prod_score + 2))
+        fi
+      fi
+    fi
+
+    if [ "$has_outputs" = false ]; then
+      log_warn "No outputs/ directory found - squad not tested in production"
+    fi
   fi
 
   log_subsection "5.2 Tested Flag"
